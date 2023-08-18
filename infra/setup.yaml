@@ -1,10 +1,10 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: helloworld-tf
 spec:
-  interval: 1m
+  interval: 2m
   url: https://github.com/jozemario/gitops
   ref:
     branch: main
