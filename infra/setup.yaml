@@ -5,7 +5,7 @@ metadata:
   name: helloworld-tf
 spec:
   interval: 1m
-  url: git@github.com:jozemario/gitops.git
+  url: https://github.com/jozemario/gitops
   ref:
     branch: master
 ---
