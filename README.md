@@ -71,5 +71,8 @@ argocd repo add https://github.com/jozemario/gitops.git --server localhost:8080 
 
 
 https://weaveworks.github.io/tf-controller/use_tf_controller/
+
+kubectl get helmcharts --all-namespaces
+
 ```
 
