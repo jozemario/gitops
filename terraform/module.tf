@@ -1,5 +1,5 @@
-terraform {
-  required_version = ">= 1.5.5"
+module "nfs-provider-k8s" {
+  source = "./nfs-provider-k8s"
 }
 
 module "mssql-server-k8s" {

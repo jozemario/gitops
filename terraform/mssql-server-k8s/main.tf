@@ -1,6 +1,6 @@
-#terraform {
-#  required_version = ">= 1.5.5"
-#}
+terraform {
+  required_version = ">= 1.5.5"
+}
 #
 # variable "subject" {
 #    type = string

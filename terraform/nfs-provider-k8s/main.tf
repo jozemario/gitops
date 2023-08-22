@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 1.5.5"
+}
+
 data "template_file" "chart_values" {
   template = file("./nfs-provider-k8s/chart-values.yml")
 }
