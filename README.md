@@ -69,5 +69,7 @@ argocd app list --server localhost:8080
 argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 argocd repo add https://github.com/jozemario/gitops.git --server localhost:8080 --username user --password pass
 
+
+https://weaveworks.github.io/tf-controller/use_tf_controller/
 ```
 
