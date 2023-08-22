@@ -3,6 +3,12 @@ terraform {
   required_version = ">= 0.12.26"
 }
 
+resource "kubernetes_namespace" "nfs-provider" {
+  metadata {
+    name = "dbs"
+  }
+}
+
  variable "subject" {
     type = string
     default = "tfctl-rc"
@@ -10,7 +16,7 @@ terraform {
  }
 
 variable "namespace" {
-  value = "dev"
+  value = "dbs"
 }
 
  output "hello_world" {
@@ -20,13 +26,11 @@ variable "namespace" {
 data "template_file" "chart_values" {
   template = file("./disabled/nfs-provider-k8s/chart-values.yml")
 }
-##helm install uol-nfs-provider --set nfs.server=34.216.204.56 --set nfs.path=/var/uolshare/ stable/nfs-client-provisioner
 
 resource "helm_release" "nfs-provider" {
   chart = "nfs-subdir-external-provisioner/nfs-subdir-external-provisioner"
   name = "nfs-provider"
   repository = "https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner"
-  #version   = "3.21.0"
   namespace = var.namespace
 
   values = [
