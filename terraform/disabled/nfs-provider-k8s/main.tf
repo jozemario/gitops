@@ -3,7 +3,7 @@ terraform {
 }
 
 data "template_file" "chart_values" {
-  template = file("./nfs-provider-k8s/chart-values.yml")
+  template = file("./disabled/nfs-provider-k8s/chart-values.yml")
 }
 ##helm install uol-nfs-provider --set nfs.server=34.216.204.56 --set nfs.path=/var/uolshare/ stable/nfs-client-provisioner
 
