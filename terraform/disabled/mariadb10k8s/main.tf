@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 0.15.1"
+}
+
 resource "kubernetes_namespace" "mariadb8ks" {
   metadata {
     name = "mariadb"
