@@ -1,6 +1,6 @@
-terraform {
-  required_version = ">= 1.5.5"
-}
+#terraform {
+#  required_version = ">= 1.5.5"
+#}
 #
 # variable "subject" {
 #    type = string
@@ -20,7 +20,7 @@ resource "helm_release" "mssql-server" {
   name = "mssql-server"
   repository = "https://cloudnativeapp.github.io/charts/curated/"
   version   = "0.7.0"
-  namespace = "dev"
+  namespace = "dbs"
 
   values = [
   	data.template_file.chart_values.rendered
