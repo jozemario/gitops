@@ -11,6 +11,11 @@
 # output "hello_world" {
 #   value = "hey hey ya, ${var.subject}!"
 # }
+
+terraform {
+  required_version = ">= 0.15.1"
+}
+
 data "template_file" "chart_values" {
 	template = file("./mssql-server-k8s/chart-values.yml")
 }
@@ -20,7 +25,7 @@ resource "helm_release" "mssql-server" {
   name = "mssql-server"
   repository = "https://cloudnativeapp.github.io/charts/curated/"
   version   = "0.7.0"
-  namespace = "dbs"
+  #namespace = "dbs"
 
   values = [
   	data.template_file.chart_values.rendered
