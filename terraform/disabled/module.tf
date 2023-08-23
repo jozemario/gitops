@@ -1,8 +1,8 @@
-
-module "nfs-provider-k8s" {
-  source = "./nfs-provider-k8s"
+terraform {
+  #required_version = ">= 1.5.5"
+  required_version = ">= 0.15.1"
 }
 
-#module "mssql-server-k8s" {
-#  source = "./mssql-server-k8s"
-#}
+module "mariadb10k8s" {
+  source = "./mariadb10k8s"
+}

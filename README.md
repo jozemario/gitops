@@ -74,5 +74,8 @@ https://weaveworks.github.io/tf-controller/use_tf_controller/
 
 kubectl get helmcharts --all-namespaces
 
+
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+helm install nfs-provider --set nfs.server=34.216.204.56 --set nfs.path=/var/uolshare/ nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
 ```
 
