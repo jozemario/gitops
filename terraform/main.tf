@@ -14,11 +14,11 @@ output "hello_world" {
  value = "2023 hey hey ya, ${var.subject}!"
 }
 
-#resource "kubernetes_namespace" "mariadb8ks" {
-#  metadata {
-#    name = "mariadb"
-#  }
-#}
+resource "kubernetes_namespace" "mariadb8ks" {
+  metadata {
+    name = "mariadb"
+  }
+}
 #resource "kubernetes_deployment" "mariadb8ks" {
 #  metadata {
 #    name      = "mariadb"
