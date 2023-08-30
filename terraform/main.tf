@@ -11,7 +11,7 @@ variable "subject" {
 }
 
 output "hello_world" {
- value = "hey hey ya, ${var.subject}!"
+ value = "2023 hey hey ya, ${var.subject}!"
 }
 
 #resource "kubernetes_namespace" "mariadb8ks" {
