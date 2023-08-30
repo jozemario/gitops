@@ -14,75 +14,75 @@ output "hello_world" {
  value = "2023 hey hey ya, ${var.subject}!"
 }
 
-resource "kubernetes_namespace" "mariadb8ks" {
-  metadata {
-    name = "mariadb"
-  }
-}
-#resource "kubernetes_deployment" "mariadb8ks" {
+#resource "kubernetes_namespace" "mariadb8ks" {
 #  metadata {
-#    name      = "mariadb"
-#    namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+#    name = "mariadb"
 #  }
-#  spec {
-#    replicas = 1
-#    selector {
-#      match_labels = {
-#        app = "mariadbApp"
-#      }
-#    }
-#    template {
-#      metadata {
-#        labels = {
-#          app = "mariadbApp"
-#        }
-#      }
-#      spec {
-#        container {
-#          #docker pull mariadb:10.5.4-focal
-#          #image = "mariadb:10.5.4"
-#          image = "mariadb:10.5.4-focal"
-#          #image = "mariadb"
-#          name  = "mariadb-container"
-#          env {
-#            name  = "MYSQL_DATABASE"
-#            value = "mysql"
-#          }
-#          env {
-#            name  = "MYSQL_USER"
-#            value = "mysql"
-#          }
-#          env {
-#            name  = "MYSQL_PASSWORD"
-#            value = "P0o9i8u7y6"
-#          }
-#          env {
-#            name  = "MYSQL_ROOT_PASSWORD"
-#            value = "P0o9i8u7y6"
-#          }
-#
-#          port {
-#            name = "mariadb"
-#            container_port = 3306
-#          }
-#
+#}
+resource "kubernetes_deployment" "mariadb8ks" {
+  metadata {
+    name      = "mariadb"
+    namespace = "dev"
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "mariadbApp"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "mariadbApp"
+        }
+      }
+      spec {
+        container {
+          #docker pull mariadb:10.5.4-focal
+          #image = "mariadb:10.5.4"
+          image = "mariadb:10.5.4-focal"
+          #image = "mariadb"
+          name  = "mariadb-container"
+          env {
+            name  = "MYSQL_DATABASE"
+            value = "mysql"
+          }
+          env {
+            name  = "MYSQL_USER"
+            value = "mysql"
+          }
+          env {
+            name  = "MYSQL_PASSWORD"
+            value = "P0o9i8u7y6"
+          }
+          env {
+            name  = "MYSQL_ROOT_PASSWORD"
+            value = "P0o9i8u7y6"
+          }
+
+          port {
+            name = "mariadb"
+            container_port = 3306
+          }
+
 #          volume_mount {
 #            mount_path = "/var/lib/mysql"
 #            name = "mariadb-pvc"
 #          }
-#
-#        }
+
+        }
 #        volume {
 #          name = "mariadb-pvc"
 #          persistent_volume_claim {
 #            claim_name = "mariadb-pvc"
 #          }
 #        }
-#
-#      }
-#    }
-#  }
-#}
+
+      }
+    }
+  }
+}
 #resource "kubernetes_service" "mariadb8ks" {
 #  metadata {
 #    name      = "mariadb"
