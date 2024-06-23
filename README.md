@@ -122,3 +122,50 @@ name: helloworld
 namespace: flux-system
 For a full list of features and how to use them, please follow the Use TF-controller guide.
 ```
+
+---
+```
+#branch planner 
+
+Create a secret that contains a GitHub API token. If you do not use the gh CLI, copy and paste the token from GitHub's website.
+
+export GITHUB_TOKEN=$(gh auth token)
+
+kubectl create secret generic branch-planner-token \
+    --namespace=flux-system \
+    --from-literal="token=${GITHUB_TOKEN}"
+
+Create a Terraform object with a Source pointing to a repository. Your repository must contain a Terraform file—for example, main.tf. Check out this demo for an example.
+
+export GITHUB_USER=<your user>
+export GITHUB_REPO=<your repo>
+
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: branch-planner-demo
+  namespace: flux-system
+spec:
+  interval: 30s
+  url: https://github.com/${GITHUB_USER}/${GITHUB_REPO}
+  ref:
+    branch: main
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha2
+kind: Terraform
+metadata:
+  name: branch-planner-demo
+  namespace: flux-system
+spec:
+  approvePlan: auto
+  path: ./
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: branch-planner-demo
+    namespace: flux-system
+EOF
+Now you can create a pull request on your GitHub repo. The Branch Planner will create a new Terraform object with the plan-only mode enabled and will generate a new plan for you. It will post the plan as a new comment in the pull request.
+```
