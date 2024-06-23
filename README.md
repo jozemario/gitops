@@ -10,9 +10,12 @@ brew install argocd
 Flux   Argo CD. Image
 v2.0.1  v2.8   v2.8.0-rc6-fl.15-main-da46678f
 
-export VERSION=v2.8.0-rc6-fl.15-main-da46678f
 kubectl create ns argocd  
-kubectl -n argocd apply -k https://github.com/flux-subsystem-argo/flamingo/release?ref=v2.8.0-rc6-fl.15-main-da46678f
+wget https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
+kubectl apply -n argocd -f install.yaml 
+
+wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
+kubectl -n argocd apply -f kustomization.yaml
 flux install
 -----------------------------------------------------------------------
 ### Login to Argo CD UI
@@ -40,7 +43,7 @@ spec:
   interval: 30s
   url: oci://ghcr.io/flux-subsystem-argo/flamingo/manifests
   ref:
-    tag: v2.7
+    tag: v2.8
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -62,15 +65,19 @@ EOF
 -------
 
 connect github repo 
-argocd login localhost:8080`
+argocd login localhost:8080
 admin pass
 
 argocd app list --server localhost:8080
 argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 argocd repo add https://github.com/jozemario/gitops.git --server localhost:8080 --username user --password pass
 
+https://flux-iac.github.io/tofu-controller/
+https://flux-iac.github.io/tofu-controller/branch-planner/
+kubectl apply -f https://raw.githubusercontent.com/flux-iac/tofu-controller/main/docs/release.yaml
+kubectl apply -f opentofu-controller-release.yaml
+kubectl apply -f https://raw.githubusercontent.com/flux-iac/tofu-controller/main/docs/branch-planner/release.yaml
 
-https://weaveworks.github.io/tf-controller/use_tf_controller/
 
 kubectl get helmcharts --all-namespaces
 
@@ -78,34 +85,40 @@ kubectl get helmcharts --all-namespaces
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
 helm install nfs-provider --set nfs.server=34.216.204.56 --set nfs.path=/var/uolshare/ nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
 ```
-### GitOps automation mode
+### Quick start
 ```
-The GitOps automation mode is the GitOps automation mode to be used to run the Terraform module. It determines how Terraform runs and manages your infrastructure. It is optional. If not specified, the "plan-and-manually-apply" mode will be used by default. In the "plan-and-manually-apply" mode, TF-controller will run a Terraform plan and output the proposed changes to a Git repository. A human must then review and manually apply the changes. This is the default GitOps automation mode if none is specified.
+Here's a simple example of how to GitOps your Terraform resources with TF-controller and Flux.
 
-In the "auto-apply" mode, TF-controller will automatically apply the changes after a Terraform plan is run. This can be useful for environments where changes can be made automatically, but it is important to ensure that the proper controls, like policies, are in place to prevent unintended changes from being applied.
+Define source
+First, we need to define a Source controller's source (GitRepository, Bucket, OCIRepository), for example:
 
-To specify the GitOps automation mode in a Terraform object, you can set the spec.approvePlan field to the desired value. For example, to use the "auto-apply" mode, y ou would set it to spec.approvePlan: auto.
 
-It is important to carefully consider which GitOps automation mode is appropriate for your use case to ensure that your infrastructure is properly managed and controlled.
-
-The following is an example of a Terraform object; we use the "auto-apply" mode:
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+name: helloworld
+namespace: flux-system
+spec:
+interval: 30s
+url: https://github.com/tf-controller/helloworld
+ref:
+branch: main
+The GitOps Automation mode
+The GitOps automation mode could be enabled by setting .spec.approvePlan=auto. In this mode, Terraform resources will be planned, and automatically applied for you.
 
 
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
 metadata:
 name: helloworld
+namespace: flux-system
 spec:
-path: ./helloworld
-interval: 10m
+interval: 1m
 approvePlan: auto
+path: ./
 sourceRef:
 kind: GitRepository
 name: helloworld
-
-This code is defining a Terraform object in Kubernetes. The apiVersion field specifies the version of the Kubernetes API being used, and the kind field specifies that it is a Terraform object. The metadata block contains information about the object, including its name.
-
-The spec field contains the specification for the Terraform object. The path field specifies the path to the Terraform configuration files, in this case a directory named "helloworld". The interval field specifies the frequency at which TF-controller should run the Terraform configuration, in this case every 10 minutes. The approvePlan field specifies whether or not to automatically approve the changes proposed by a Terraform plan. In this case, it is set to auto, meaning that changes will be automatically approved.
-
-The sourceRef field specifies the Flux source object to be used. In this case, it is a GitRepository object with the name "helloworld". This indicates that the Terraform configuration is stored in a Git repository object with the name helloworld.
+namespace: flux-system
+For a full list of features and how to use them, please follow the Use TF-controller guide.
 ```
