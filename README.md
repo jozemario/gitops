@@ -72,6 +72,15 @@ argocd app list --server localhost:8080
 argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 argocd repo add https://github.com/jozemario/gitops.git --server localhost:8080 --username user --password pass
 
+argocd repo add https://github.com/jozemario/gitops.git --server localhost:8080 --username admin --password q1HpKBvSBPFyzKo8
+
+If the HEAD branch of the remote repository is one of the branches configured in your fetch refspecs, then this should work:
+
+git remote set-head origin -a
+This will query the remote for its HEAD and set origin/HEAD to point to the corresponding remote-tracking branch in your repository.
+
+If the remote HEAD points to a branch thst is not covered by your fetch refspec, then you would have to add a fetch refspec for that branch, fetch it, and then run the above command.
+
 https://flux-iac.github.io/tofu-controller/
 https://flux-iac.github.io/tofu-controller/branch-planner/
 kubectl apply -f https://raw.githubusercontent.com/flux-iac/tofu-controller/main/docs/release.yaml
