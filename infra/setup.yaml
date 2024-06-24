@@ -2,7 +2,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: helloworld
-  namespace: flux-system
 spec:
   interval: 30s
   url: https://github.com/jozemario/gitops
@@ -13,7 +12,6 @@ apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
 metadata:
   name: helloworld
-  namespace: flux-system
 spec:
   interval: 1m
   approvePlan: auto
@@ -21,4 +19,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: helloworld
-    namespace: flux-system
