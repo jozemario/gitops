@@ -17,6 +17,9 @@ kubectl apply -n argocd -f install.yaml
 wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
 kubectl -n argocd apply -f kustomization.yaml
 flux install
+
+
+flamingo show-init-password
 -----------------------------------------------------------------------
 ### Login to Argo CD UI
 The default user name is `admin`.
