@@ -1,8 +1,7 @@
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: helloworld-tf
+  name: helloworld
   namespace: flux-system
 spec:
   interval: 30s
@@ -13,13 +12,13 @@ spec:
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
 metadata:
-  name: helloworld-tf
+  name: helloworld
   namespace: flux-system
 spec:
-  path: ./terraform
-  approvePlan: auto
   interval: 1m
+  approvePlan: auto
+  path: ./terraform
   sourceRef:
     kind: GitRepository
-    name: helloworld-tf
+    name: helloworld
     namespace: flux-system

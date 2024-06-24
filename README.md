@@ -83,10 +83,13 @@ If the remote HEAD points to a branch thst is not covered by your fetch refspec,
 
 https://flux-iac.github.io/tofu-controller/
 https://flux-iac.github.io/tofu-controller/branch-planner/
-kubectl apply -f https://raw.githubusercontent.com/flux-iac/tofu-controller/main/docs/release.yaml
-kubectl apply -f opentofu-controller-release.yaml
-kubectl apply -f https://raw.githubusercontent.com/flux-iac/tofu-controller/main/docs/branch-planner/release.yaml
 
+--------
+export TF_CON_VER=v0.16.0-rc.4
+kubectl create -f tofu-controller/tf-controller.crds.yaml
+kubectl create -f tofu-controller/tf-controller.rbac.yaml
+kubectl create -f tofu-controller/tf-controller.deployment.yaml
+--------
 
 kubectl get helmcharts --all-namespaces
 
@@ -176,5 +179,51 @@ spec:
     name: branch-planner-demo
     namespace: flux-system
 EOF
+
+
+kubectl apply -f infra/branch-planner.yaml
+
+
 Now you can create a pull request on your GitHub repo. The Branch Planner will create a new Terraform object with the plan-only mode enabled and will generate a new plan for you. It will post the plan as a new comment in the pull request.
+```
+
+```
+Configure Branch Planner
+Branch Planner uses a ConfigMap as configuration. The ConfigMap is optional but useful for fine-tuning Branch Planner.
+
+Configuration
+By default, Branch Planner will look for the branch-planner ConfigMap in the same namespace as where the TF-Controller is installed. That ConfigMap allows users to specify which Terraform resources in a cluster the Brach Planner should monitor.
+
+The ConfigMap has two fields:
+
+secretName, which contains the API token to access GitHub.
+resources, which defines a list of resources to watch.
+
+
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: branch-planner
+data:
+  secretName: branch-planner-token
+  resources: |-
+    - namespace: terraform
+    - namespace: flux-system
+EOF
+
+
+Resources
+If the resources list is empty, nothing will be watched. The resource definition can be exact or namespace-wide.
+
+With the following configuration file, the Branch Planner will watch all Terraform objects in the terraform namespace, and the exact-terraform-object Terraform object in default namespace.
+
+
+data:
+  resources:
+    - namespace: default
+      name: exact-terraform-object
+    - namespace: terraform
 ```
