@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ARGO.iml" filepath="$PROJECT_DIR$/.idea/ARGO.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../iass/.idea/iass.iml" filepath="$PROJECT_DIR$/../iass/.idea/iass.iml" />
     </modules>
   </component>
 </project>
