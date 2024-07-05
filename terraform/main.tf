@@ -2,25 +2,25 @@ terraform {
   required_version = ">= 1.3.9"
 }
 
-variable "subject" {
-   type = string
-   default = "World"
-   description = "Subject to hello"
-}
+# variable "subject" {
+#    type = string
+#    default = "World"
+#    description = "Subject to hello"
+# }
 
-output "hello_world" {
-  value = "Hello TF Controller v0.16.0-rc.2, ${var.subject}!"
-}
+# output "hello_world" {
+#   value = "Hello TF Controller v0.16.0-rc.2, ${var.subject}!"
+# }
 
-resource "kubernetes_namespace" "mariadb8ks" {
-  metadata {
-    name = "mariadb"
-  }
-}
+# resource "kubernetes_namespace" "mariadb8ks" {
+#   metadata {
+#     name = "mariadb"
+#   }
+# }
 resource "kubernetes_deployment" "mariadb8ks" {
   metadata {
     name      = "mariadb"
-    namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+    #namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
   }
   spec {
     replicas = 1
@@ -84,7 +84,7 @@ resource "kubernetes_deployment" "mariadb8ks" {
 resource "kubernetes_service" "mariadb8ks" {
   metadata {
     name      = "mariadb"
-    namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+    #namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
   }
   spec {
     selector = {
