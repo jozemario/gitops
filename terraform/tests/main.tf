@@ -54,18 +54,18 @@ resource "kubernetes_deployment" "mariadb8ks" {
             container_port = 3306
           }
 
-          volume_mount {
-            mount_path = "/var/lib/mysql"
-            name = "mariadb-pvc"
-          }
+#           volume_mount {
+#             mount_path = "/var/lib/mysql"
+#             name = "mariadb-pvc"
+#           }
 
         }
-        volume {
-          name = "mariadb-pvc"
-          persistent_volume_claim {
-            claim_name = "mariadb-pvc"
-          }
-        }
+#         volume {
+#           name = "mariadb-pvc"
+#           persistent_volume_claim {
+#             claim_name = "mariadb-pvc"
+#           }
+#         }
 
       }
     }
@@ -90,51 +90,51 @@ resource "kubernetes_service" "mariadb8ks" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "mariadb8ks" {
-  metadata {
-    name      = "mariadb-pvc"
-    labels = {
-      app = "mariadbApp"
-    }
-    namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
-  }
-  spec {
-    access_modes = ["ReadWriteMany"]
-    storage_class_name = ""
-    resources {
-      requests = {
-        storage = "5Gi"
-      }
-    }
-    volume_name = "mariadb-pv"
-  }
-}
+# resource "kubernetes_persistent_volume_claim" "mariadb8ks" {
+#   metadata {
+#     name      = "mariadb-pvc"
+#     labels = {
+#       app = "mariadbApp"
+#     }
+#     namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+#   }
+#   spec {
+#     access_modes = ["ReadWriteMany"]
+#     storage_class_name = ""
+#     resources {
+#       requests = {
+#         storage = "5Gi"
+#       }
+#     }
+#     volume_name = "mariadb-pv"
+#   }
+# }
 
 ## NFS Server as persistent volume
-resource "kubernetes_persistent_volume" "mariadb8ks" {
-  metadata {
-    name = "mariadb-pv"
-    labels = {
-      app = "mariadbApp"
-    }
-    #namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
-  }
-  spec {
-    capacity = {
-      storage = "5Gi"
-    }
-    access_modes = ["ReadWriteMany"]
-    persistent_volume_reclaim_policy = "Delete"
-    persistent_volume_source {
-      nfs {
-        path   = "/var/uolshare/mariadb"
-        server = "ec2-34-216-204-56.us-west-2.compute.amazonaws.com"
-        read_only = "false"
-      }
-    }
-    claim_ref {
-      namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
-      name = "mariadb-pvc"
-    }
-  }
-}
+# resource "kubernetes_persistent_volume" "mariadb8ks" {
+#   metadata {
+#     name = "mariadb-pv"
+#     labels = {
+#       app = "mariadbApp"
+#     }
+#     #namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+#   }
+#   spec {
+#     capacity = {
+#       storage = "5Gi"
+#     }
+#     access_modes = ["ReadWriteMany"]
+#     persistent_volume_reclaim_policy = "Delete"
+#     persistent_volume_source {
+#       nfs {
+#         path   = "/var/uolshare/mariadb"
+#         server = "ec2-34-216-204-56.us-west-2.compute.amazonaws.com"
+#         read_only = "false"
+#       }
+#     }
+#     claim_ref {
+#       namespace = kubernetes_namespace.mariadb8ks.metadata.0.name
+#       name = "mariadb-pvc"
+#     }
+#   }
+# }
