@@ -1,7 +1,17 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: helloworld
+  name: develop
+spec:
+  interval: 30s
+  url: https://github.com/jozemario/gitops
+  ref:
+    branch: develop
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: production
 spec:
   interval: 30s
   url: https://github.com/jozemario/gitops
@@ -23,11 +33,11 @@ spec:
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
 metadata:
-  name: helloworld
+  name: production
 spec:
   interval: 1m
   approvePlan: auto
   path: ./terraform
   sourceRef:
     kind: GitRepository
-    name: helloworld
+    name: production

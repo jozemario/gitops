@@ -2,12 +2,12 @@ terraform {
   required_version = ">= 1.3.9"
 }
 
-variable "subject" {
+variable "branch" {
    type = string
    default = "Environment"
-   description = "Welcome to Develop"
+   description = "Develop Branch"
 }
 
-output "hello_world" {
-  value = "Hello TF DEV Controller v0.16.0-rc.2, ${var.subject}!"
+output "environment" {
+  value = "TF DEV Controller + Template v0.16.0-rc.2, ${var.branch}!"
 }
