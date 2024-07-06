@@ -213,6 +213,7 @@ metadata:
 data:
   secretName: branch-planner-token
   resources: |-
+    - namespace: dev
     - namespace: terraform
     - namespace: flux-system
 EOF
