@@ -2,7 +2,7 @@
 
 ```
 -----------------------------------------------------------------------
-brew install fluxcd/tap/flux  
+brew install fluxcd/tap/flux
 flux install
 brew install argocd
 
@@ -10,9 +10,9 @@ brew install argocd
 Flux   Argo CD. Image
 v2.0.1  v2.8   v2.8.0-rc6-fl.15-main-da46678f
 
-kubectl create ns argocd  
+kubectl create ns argocd
 wget https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
-kubectl apply -n argocd -f install.yaml 
+kubectl apply -n argocd -f install.yaml
 
 wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
 kubectl -n argocd apply -f kustomization.yaml
@@ -41,7 +41,7 @@ metadata:
   annotations:
     metadata.weave.works/flamingo-default-app: "https://localhost:8080/applications/argocd/default-app?view=tree"
     metadata.weave.works/flamingo-fsa-installation: "https://localhost:8080/applications/argocd/fsa-installation?view=tree"
-    link.argocd.argoproj.io/external-link: "http://localhost:9001/oci/details?clusterName=Default&name=fsa-demo&namespace=flux-system"    
+    link.argocd.argoproj.io/external-link: "http://localhost:9001/oci/details?clusterName=Default&name=fsa-demo&namespace=flux-system"
 spec:
   interval: 30s
   url: oci://ghcr.io/flux-subsystem-argo/flamingo/manifests
@@ -67,7 +67,7 @@ spec:
 EOF
 -------
 
-connect github repo 
+connect github repo
 argocd login localhost:8080
 admin pass
 
@@ -92,6 +92,20 @@ export TF_CON_VER=v0.16.0-rc.4
 kubectl create -f tofu-controller/tf-controller.crds.yaml
 kubectl create -f tofu-controller/tf-controller.rbac.yaml
 kubectl create -f tofu-controller/tf-controller.deployment.yaml
+
+kubectl delete -f tofu-controller/tf-controller.crds.yaml
+kubectl delete -f tofu-controller/tf-controller.rbac.yaml
+kubectl delete -f tofu-controller/tf-controller.deployment.yaml
+
+
+kubectl create -f tofu-controller/tofu-controller.crds.yaml
+kubectl create -f tofu-controller/tofu-controller.rbac.yaml
+kubectl create -f tofu-controller/tofu-controller.deployment.yaml
+
+
+kubectl delete -f tofu-controller/tofu-controller.crds.yaml
+kubectl delete -f tofu-controller/tofu-controller.rbac.yaml
+kubectl delete -f tofu-controller/tofu-controller.deployment.yaml
 --------
 
 kubectl get helmcharts --all-namespaces
@@ -100,7 +114,9 @@ kubectl get helmcharts --all-namespaces
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
 helm install nfs-provider --set nfs.server=34.216.204.56 --set nfs.path=/var/uolshare/ nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
 ```
+
 ### Quick start
+
 ```
 Here's a simple example of how to GitOps your Terraform resources with TF-controller and Flux.
 
@@ -139,8 +155,9 @@ For a full list of features and how to use them, please follow the Use TF-contro
 ```
 
 ---
+
 ```
-#branch planner 
+#branch planner
 
 Create a secret that contains a GitHub API token. If you do not use the gh CLI, copy and paste the token from GitHub's website.
 
@@ -230,4 +247,30 @@ data:
     - namespace: default
       name: exact-terraform-object
     - namespace: terraform
+```
+
+### START FROM SCRATCH
+
+```
+kubectl get nodes
+chmod +x deploy-gitops.sh
+./deploy-gitops.sh
+
+The script will:
+Install ArgoCD
+Install Flamingo (Flux-ArgoCD integration)
+Install FluxCD
+Install Tofu Controller
+Configure basic settings
+Display the ArgoCD admin password
+Provide instructions for accessing the ArgoCD UI
+
+🔑 ArgoCD Admin Password:
+S6Yr0lfyS07gXF3a
+🌐 Setting up port forwarding for ArgoCD UI...
+Run the following command in a new terminal to access ArgoCD UI:
+kubectl -n argocd port-forward svc/argocd-server 8080:443
+✅ GitOps infrastructure deployment completed!
+Access ArgoCD UI at: https://localhost:8080
+Username: admin
 ```
