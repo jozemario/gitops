@@ -151,5 +151,5 @@ output "hello_world" {
 }
 
 output "mariadb_connection_string" {
-  value = "mysql -h ${kubernetes_service.mariadb.metadata[0].name}.${kubernetes_namespace.qa.metadata[0].name}.svc.cluster.local -P 3306 -u root -p"
+  value = "mysql -h ${kubernetes_service.mariadb.metadata[0].name}.dev.svc.cluster.local -P 3306 -u root -p"
 }
