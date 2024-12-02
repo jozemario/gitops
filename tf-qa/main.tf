@@ -2,12 +2,12 @@ terraform {
   required_version = ">= 1.3.9"
 }
 
-variable "subject" {
+variable "branch" {
    type = string
-   default = "tfctl-rc"
-   description = "Subject to hello"
+   default = "qa"
+   description = "QA Branch"
 }
 
 output "hello_world" {
-  value = "hey hey ya, ${var.subject}!"
+  value = "Welcome to QA - ${var.branch} branch!"
 }

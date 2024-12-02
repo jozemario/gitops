@@ -4,10 +4,10 @@ terraform {
 
 variable "branch" {
    type = string
-   default = "Environment"
-   description = "Main Branch"
+   default = "main"
+   description = "Production Branch"
 }
 
 output "environment" {
-  value = "TF Production Controller + Template v0.16.0-rc.2, ${var.branch}!"
+  value = "Welcome to Production - ${var.branch} branch!"
 }

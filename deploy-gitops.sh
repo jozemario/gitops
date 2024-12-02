@@ -55,7 +55,7 @@ kubectl create namespace staging
 kubectl create namespace production
 
 argocd app list --server localhost:8080
-argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
+# argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 
 
 export TF_CON_VER=v0.16.0-rc.4
@@ -68,19 +68,19 @@ kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 # kustomize build ./my-kustomization/
 
 # For Kubectl integrated Kustomize
-kubectl kustomize ./infra/
+# kubectl kustomize ./infra/
 
 
-The same Kustomization can be applied to a cluster like this:
+# The same Kustomization can be applied to a cluster like this:
 
-# For standalone Kustomize pipe into Kubectl
-kustomize build ./my-kustomization/ | kubectl apply -f -
+# # For standalone Kustomize pipe into Kubectl
+# kustomize build ./my-kustomization/ | kubectl apply -f -
 
-# For Kubectl integrated Kustomize
-kubectl apply -k ./infra/
+# # For Kubectl integrated Kustomize
+# kubectl apply -k ./infra/
 
 
-kubectl apply -k infra/.
+# kubectl apply -k infra/.
 
 
 

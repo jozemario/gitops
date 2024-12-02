@@ -274,3 +274,30 @@ kubectl -n argocd port-forward svc/argocd-server 8080:443
 Access ArgoCD UI at: https://localhost:8080
 Username: admin
 ```
+
+### hello world example
+
+it's time to create an App to manage our Terraform resource with Flux Subsystem for Argo. Please use the following configuration for the new App (helloworld)
+
+Application Name: helloworld
+Project: default
+Sync Policy: Manual
+Sync Options:
+☑️ Auto-Create Namespace
+☑️ Apply Out Of Sync Only
+☑️ Use Flux Subsystem
+☑️ Auto-Create Flux Resources
+Repository URL: https://github.com/YOUR-GITHUB-ACCOUNT/tf-controller-helloworld
+Revision: main
+Path: ./infra
+Cluster URL: https://kubernetes.default.svc
+Namespace: dev
+After create the App, press Sync button once and wait. You could also press Refresh to see if the graph already there. If everything is correct, you would get something like the following screenshot, with a nice Terraform icon!!
+
+terraform-helloworld graph
+
+What did this main.tf do? This Terraform file did not provision anything, expect an output, which you might see that it was written into a Secret named helloworld-outputs, also shown in the graph.
+
+What's inside that output secrets, here's the command to help you find out.
+
+kubectl -n dev get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo
