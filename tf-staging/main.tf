@@ -8,6 +8,6 @@ variable "branch" {
    description = "Staging Branch"
 }
 
-output "hello_world" {
+output "environment" {
   value = "Welcome to Staging - ${var.branch} branch!"
 }

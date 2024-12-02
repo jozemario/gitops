@@ -64,6 +64,10 @@ kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
 kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 
+# install ingress-nginx
+kubectl apply -k bases/ingress-nginx/
+
+
 # For standalone Kustomize
 # kustomize build ./my-kustomization/
 

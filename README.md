@@ -301,3 +301,5 @@ What did this main.tf do? This Terraform file did not provision anything, expect
 What's inside that output secrets, here's the command to help you find out.
 
 kubectl -n dev get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo
+
+kubectl -n production get secret production-outputs -o jsonpath="{.data.environment}" | base64 -d; echo
