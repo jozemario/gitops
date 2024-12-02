@@ -64,7 +64,28 @@ kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
 kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 
+# For standalone Kustomize
+# kustomize build ./my-kustomization/
+
+# For Kubectl integrated Kustomize
+kubectl kustomize ./infra/
+
+
+The same Kustomization can be applied to a cluster like this:
+
+# For standalone Kustomize pipe into Kubectl
+kustomize build ./my-kustomization/ | kubectl apply -f -
+
+# For Kubectl integrated Kustomize
+kubectl apply -k ./infra/
+
+
 kubectl apply -k infra/.
+
+
+
+
+
 # kubectl apply -f https://raw.githubusercontent.com/weaveworks/tf-controller/fa4b3b85d316340d897fda4fed757265ba2cd30e/docs/branch_planner/release.yaml
 # kubectl delete -f https://raw.githubusercontent.com/weaveworks/tf-controller/fa4b3b85d316340d897fda4fed757265ba2cd30e/docs/branch_planner/release.yaml
 
@@ -93,3 +114,8 @@ echo "kubectl -n argocd port-forward svc/argocd-server 8080:443"
 echo -e "${GREEN}✅ GitOps infrastructure deployment completed!${NC}"
 echo "Access ArgoCD UI at: https://localhost:8080"
 echo "Username: admin"
+
+
+# flux get kustomization 
+# flux get sources git
+# flux get helmcharts
