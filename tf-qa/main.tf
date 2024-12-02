@@ -29,22 +29,6 @@ resource "kubernetes_secret" "mariadb" {
   }
 }
 
-# Create PVC for MariaDB
-resource "kubernetes_persistent_volume_claim" "mariadb" {
-  metadata {
-    name      = "mariadb-pvc"
-    namespace = "dev"
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    resources {
-      requests = {
-        storage = "1Gi"
-      }
-    }
-  }
-}
-
 # Create MariaDB Deployment
 resource "kubernetes_deployment" "mariadb" {
   metadata {
