@@ -65,8 +65,10 @@ kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 
 # install ingress-nginx
-kubectl apply -k bases/ingress-nginx/
+# kubectl apply -k bases/ingress-nginx/
 
+#install cert-manager
+kubectl apply -k bases/cert-manager/
 
 # For standalone Kustomize
 # kustomize build ./my-kustomization/
