@@ -69,7 +69,7 @@ kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 #install cert-manager
 kubectl apply -k bases/cert-manager/
-
+kubectl apply -k bases/storage/
 # For standalone Kustomize
 # kustomize build ./my-kustomization/
 
