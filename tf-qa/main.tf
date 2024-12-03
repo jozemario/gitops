@@ -83,12 +83,6 @@ resource "kubernetes_deployment" "mariadb" {
               }
             }
           }
-
-          volume_mount {
-            name       = "mariadb-data"
-            mount_path = "/var/lib/mysql"
-          }
-
           resources {
             limits = {
               cpu    = "500m"

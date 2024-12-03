@@ -314,3 +314,20 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisione
 kubectl apply -k bases/storage/
 
 <!-- kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/refs/heads/master/examples/pvc-with-local-volume/pvc.yaml -->
+
+kubectl patch ns <Namespace_to_delete> -p '{"metadata":{"finalizers":null}}'
+
+kubectl patch ns dev -p '{"metadata":{"finalizers":null}}'
+
+69
+
+I loved this answer extracted from here It is just 2 commands.
+
+In one terminal:
+
+kubectl proxy
+In another terminal:
+
+kubectl get ns delete-me -o json | \
+ jq '.spec.finalizers=[]' | \
+ curl -X PUT http://localhost:8001/api/v1/namespaces/delete-me/finalize -H "Content-Type: application/json" --data @-
