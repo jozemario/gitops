@@ -331,3 +331,8 @@ In another terminal:
 kubectl get ns delete-me -o json | \
  jq '.spec.finalizers=[]' | \
  curl -X PUT http://localhost:8001/api/v1/namespaces/delete-me/finalize -H "Content-Type: application/json" --data @-
+
+export GITHUB_TOKEN=ghp_5555555555555555555555555555555555555555
+kubectl create secret generic branch-planner-token \
+ --namespace=flux-system \
+ --from-literal="token=${GITHUB_TOKEN}"

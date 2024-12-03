@@ -55,14 +55,50 @@ kubectl create namespace staging
 kubectl create namespace production
 kubectl create namespace qa
 
-argocd app list --server localhost:8080
+# argocd app list --server localhost:8080
 # argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: fsa-demo
+  namespace: flux-system
+  annotations:
+    metadata.weave.works/flamingo-default-app: "https://localhost:8080/applications/argocd/default-app?view=tree"
+    metadata.weave.works/flamingo-fsa-installation: "https://localhost:8080/applications/argocd/fsa-installation?view=tree"
+    link.argocd.argoproj.io/external-link: "http://localhost:9001/oci/details?clusterName=Default&name=fsa-demo&namespace=flux-system"
+spec:
+  interval: 30s
+  url: oci://ghcr.io/flux-subsystem-argo/flamingo/manifests
+  ref:
+    tag: v2.8
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: fsa-demo
+  namespace: flux-system
+  annotations:
+    metadata.weave.works/flamingo-fsa-demo: "https://localhost:8080/applications/argocd/fsa-demo?view=tree"
+    link.argocd.argoproj.io/external-link: "http://localhost:9001/kustomize/details?clusterName=Default&name=fsa-demo&namespace=flux-system"
+spec:
+  prune: true
+  interval: 2m
+  path: "./demo"
+  sourceRef:
+    kind: OCIRepository
+    name: fsa-demo
+  timeout: 3m
+EOF
 
-export TF_CON_VER=v0.16.0-rc.4
-kubectl apply -f tofu-controller/tofu-controller.crds.yaml
-kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
-kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
+
+kubectl apply -f tofu-controller/release.yaml
+# export TF_CON_VER=v0.16.0-rc.4
+# kubectl apply -f tofu-controller/tofu-controller.crds.yaml
+# kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
+# kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 
 # install ingress-nginx
@@ -126,3 +162,46 @@ echo "Username: admin"
 # flux get kustomization 
 # flux get sources git
 # flux get helmcharts
+
+
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: branch-planner-demo
+  namespace: flux-system
+spec:
+  interval: 30s
+  url: https://github.com/jozemario/gitops
+  ref:
+    branch: main
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha2
+kind: Terraform
+metadata:
+  name: branch-planner
+  namespace: flux-system
+spec:
+  approvePlan: auto
+  path: ./branch-planner
+  interval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: branch-planner
+    namespace: flux-system
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: branch-planner
+data:
+  secretName: branch-planner-token
+  resources: |-
+    - namespace: production
+    - namespace: staging
+    - namespace: qa
+    - namespace: flux-system
+EOF
