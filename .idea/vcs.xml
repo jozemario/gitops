@@ -2,6 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/helloworld" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/docs/kustomize-cert-manager-demo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../iass" vcs="Git" />
   </component>
 </project>

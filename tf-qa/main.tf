@@ -100,13 +100,6 @@ resource "kubernetes_deployment" "mariadb" {
             }
           }
         }
-
-        volume {
-          name = "mariadb-data"
-          persistent_volume_claim {
-            claim_name = "local-volume-pvc"
-          }
-        }
       }
     }
   }

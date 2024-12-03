@@ -303,3 +303,14 @@ What's inside that output secrets, here's the command to help you find out.
 kubectl -n dev get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo
 
 kubectl -n production get secret production-outputs -o jsonpath="{.data.environment}" | base64 -d; echo
+
+kubectl get all -n dev
+kubectl get pvc -n dev
+kubectl get secrets -n dev
+
+Setup local storage
+
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+kubectl apply -k bases/storage/
+
+<!-- kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/refs/heads/master/examples/pvc-with-local-volume/pvc.yaml -->
