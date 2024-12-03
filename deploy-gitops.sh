@@ -93,19 +93,24 @@ spec:
   timeout: 3m
 EOF
 
+helm repo add tf-controller https://flux-iac.github.io/tofu-controller
+helm repo update
 
 kubectl apply -f tofu-controller/release.yaml
-# export TF_CON_VER=v0.16.0-rc.4
-# kubectl apply -f tofu-controller/tofu-controller.crds.yaml
-# kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
-# kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
+export TF_CON_VER=v0.16.0-rc.4
+kubectl apply -f tofu-controller/tofu-controller.crds.yaml
+kubectl apply -f tofu-controller/tofu-controller.rbac.yaml
+kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 
+kubectl apply -k bases/planner/
 # install ingress-nginx
 # kubectl apply -k bases/ingress-nginx/
 
 #install cert-manager
 kubectl apply -k bases/cert-manager/
+
+
 # kubectl apply -k bases/storage/
 # For standalone Kustomize
 # kustomize build ./my-kustomization/
@@ -164,34 +169,8 @@ echo "Username: admin"
 # flux get helmcharts
 
 
-cat <<EOF | kubectl apply -f -
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: branch-planner-demo
-  namespace: flux-system
-spec:
-  interval: 30s
-  url: https://github.com/jozemario/gitops
-  ref:
-    branch: main
----
-apiVersion: infra.contrib.fluxcd.io/v1alpha2
-kind: Terraform
-metadata:
-  name: branch-planner
-  namespace: flux-system
-spec:
-  approvePlan: auto
-  path: ./branch-planner
-  interval: 1m
-  sourceRef:
-    kind: GitRepository
-    name: branch-planner
-    namespace: flux-system
 
-EOF
+
 cat <<EOF | kubectl apply -f -
 ---
 apiVersion: v1
