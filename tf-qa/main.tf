@@ -19,10 +19,10 @@ output "hello_world" {
   value = "Welcome to QA - ${var.branch} branch!"
 }
 
-resource "kubernetes_deployment" "test" {
+resource "kubernetes_deployment" "nginx" {
   metadata {
     name      = "nginx"
-    namespace = kubernetes_namespace.test.metadata.0.name
+    namespace = qa
   }
   spec {
     replicas = 2
@@ -49,14 +49,14 @@ resource "kubernetes_deployment" "test" {
     }
   }
 }
-resource "kubernetes_service" "test" {
+resource "kubernetes_service" "nginx" {
   metadata {
     name      = "nginx"
-    namespace = dev
+    namespace = qa
   }
   spec {
     selector = {
-      app = kubernetes_deployment.test.spec.0.template.0.metadata.0.labels.app
+      app = kubernetes_deployment.nginx.spec.0.template.0.metadata.0.labels.app
     }
     type = "NodePort"
     port {

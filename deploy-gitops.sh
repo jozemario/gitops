@@ -53,6 +53,7 @@ kubectl wait --for=condition=available --timeout=300s deployment/kustomize-contr
 
 kubectl create namespace staging
 kubectl create namespace production
+kubectl create namespace qa
 
 argocd app list --server localhost:8080
 # argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
@@ -69,7 +70,7 @@ kubectl apply -f tofu-controller/tofu-controller.deployment.yaml
 
 #install cert-manager
 kubectl apply -k bases/cert-manager/
-kubectl apply -k bases/storage/
+# kubectl apply -k bases/storage/
 # For standalone Kustomize
 # kustomize build ./my-kustomization/
 
