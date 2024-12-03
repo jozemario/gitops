@@ -191,6 +191,8 @@ spec:
     name: branch-planner
     namespace: flux-system
 
+EOF
+cat <<EOF | kubectl apply -f -
 ---
 apiVersion: v1
 kind: ConfigMap
