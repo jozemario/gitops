@@ -266,7 +266,7 @@ Display the ArgoCD admin password
 Provide instructions for accessing the ArgoCD UI
 
 🔑 ArgoCD Admin Password:
-S6Yr0lfyS07gXF3a
+HPZEov4Qt5RA0vjW
 🌐 Setting up port forwarding for ArgoCD UI...
 Run the following command in a new terminal to access ArgoCD UI:
 kubectl -n argocd port-forward svc/argocd-server 8080:443
