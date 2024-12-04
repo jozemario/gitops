@@ -189,6 +189,8 @@ data:
     - namespace: flux-system
 EOF
 
+kubectl apply -k branch-planner/
+
 # export GITHUB_TOKEN=ghp_5555555555555555555555555555555555555555
 # kubectl create secret generic branch-planner-token \
 #  --namespace=flux-system \
