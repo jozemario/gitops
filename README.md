@@ -350,3 +350,5 @@ add secret to k8s
 create branch planner configmap
 
 if you need to recreate the tofu controller, you need to delete the tofu-controller and delete tf roles and rolebinding and recreate the tofu controller.
+
+kubectl -n flux-system get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo

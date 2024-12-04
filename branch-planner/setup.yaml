@@ -23,3 +23,5 @@ spec:
     kind: GitRepository
     name: branch-planner-iac
     namespace: flux-system
+  writeOutputsToSecret:
+    name: branch-planner-iac-outputs
