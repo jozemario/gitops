@@ -42,7 +42,7 @@ check_deployment_ready argocd argocd-server
 echo "🦩 Installing Flamingo..."
 # wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
 # kubectl apply -n argocd -f https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
-kubectl apply -k bases/infra/
+kubectl apply -n argocd -k bases/infra/
 # Install FluxCD
 echo "🔄 Installing FluxCD..."
 flux install
@@ -173,18 +173,18 @@ echo "Username: admin"
 
 
 
-# cat <<EOF | kubectl apply -f -
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   namespace: flux-system
-#   name: branch-planner
-# data:
-#   secretName: branch-planner-token
-#   resources: |-
-#     - namespace: production
-#     - namespace: staging
-#     - namespace: qa
-#     - namespace: flux-system
-# EOF
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: branch-planner
+data:
+  secretName: branch-planner-token
+  resources: |-
+    - namespace: production
+    - namespace: staging
+    - namespace: qa
+    - namespace: flux-system
+EOF

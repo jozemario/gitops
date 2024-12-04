@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: tf-controller
-      version: '0.16.0-rc.4'
+      version: "0.16.0-rc.4"
   interval: 1h0s
   releaseName: tf-controller
   targetNamespace: flux-system
@@ -52,3 +52,7 @@ spec:
         tag: v0.16.0-rc.4
       grpc:
         maxMessageSize: 30
+    branchPlanner:
+      enabled: true
+      image:
+        tag: v0.16.0-rc.4
