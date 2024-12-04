@@ -266,7 +266,7 @@ Display the ArgoCD admin password
 Provide instructions for accessing the ArgoCD UI
 
 🔑 ArgoCD Admin Password:
-HPZEov4Qt5RA0vjW
+YM8k6f9NBSq-ASEs
 🌐 Setting up port forwarding for ArgoCD UI...
 Run the following command in a new terminal to access ArgoCD UI:
 kubectl -n argocd port-forward svc/argocd-server 8080:443
@@ -336,3 +336,7 @@ export GITHUB_TOKEN=ghp_5555555555555555555555555555555555555555
 kubectl create secret generic branch-planner-token \
  --namespace=flux-system \
  --from-literal="token=${GITHUB_TOKEN}"
+
+helm repo add tf-controller https://flux-iac.github.io/tofu-controller
+
+helm repo update
