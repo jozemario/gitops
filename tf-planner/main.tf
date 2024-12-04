@@ -4,10 +4,10 @@ terraform {
 
 variable "subject" {
    type = string
-   default = "World"
+   default = "Branch Planner"
    description = "Subject to hello"
 }
 
 output "hello_world" {
-  value = "Hello TF Controller v0.16.0-rc.4, ${var.subject}!"
+  value = "Hello TF Controller v0.16.0-rc.4 with ${var.subject}!"
 }
