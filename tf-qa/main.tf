@@ -11,12 +11,12 @@ terraform {
 
 variable "branch" {
    type = string
-   default = "qa"
+   default = "QA"
    description = "QA Branch"
 }
 
 output "hello_world" {
-  value = "Welcome to QA - ${var.branch} branch!"
+  value = "Welcome to ENV - ${var.branch}!"
 }
 
 resource "kubernetes_deployment" "nginx" {
