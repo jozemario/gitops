@@ -22,7 +22,7 @@ output "hello_world" {
 resource "kubernetes_deployment" "nginx" {
   metadata {
     name      = "nginx"
-    namespace = qa
+    namespace = "qa"
   }
   spec {
     replicas = 2
@@ -52,7 +52,7 @@ resource "kubernetes_deployment" "nginx" {
 resource "kubernetes_service" "nginx" {
   metadata {
     name      = "nginx"
-    namespace = qa
+    namespace = "qa"
   }
   spec {
     selector = {
