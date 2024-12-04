@@ -340,3 +340,13 @@ kubectl create secret generic branch-planner-token \
 helm repo add tf-controller https://flux-iac.github.io/tofu-controller
 
 helm repo update
+
+---
+
+run setup script
+
+add github token
+add secret to k8s
+create branch planner configmap
+
+if you need to recreate the tofu controller, you need to delete the tofu-controller and delete tf roles and rolebinding and recreate the tofu controller.
