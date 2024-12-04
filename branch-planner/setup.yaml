@@ -9,6 +9,8 @@ spec:
   url: https://github.com/jozemario/gitops
   ref:
     branch: main
+  secretRef:
+    name: branch-planner-token
 ---
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
@@ -23,5 +25,6 @@ spec:
     kind: GitRepository
     name: branch-planner-iac
     namespace: flux-system
+  storeReadablePlan: human
   writeOutputsToSecret:
     name: branch-planner-iac-outputs
