@@ -267,6 +267,10 @@ Provide instructions for accessing the ArgoCD UI
 
 🔑 ArgoCD Admin Password:
 YM8k6f9NBSq-ASEs
+
+k3s
+EkEGuGV7VcIYyRqL
+
 🌐 Setting up port forwarding for ArgoCD UI...
 Run the following command in a new terminal to access ArgoCD UI:
 kubectl -n argocd port-forward svc/argocd-server 8080:443
@@ -332,6 +336,10 @@ kubectl get ns delete-me -o json | \
  jq '.spec.finalizers=[]' | \
  curl -X PUT http://localhost:8001/api/v1/namespaces/delete-me/finalize -H "Content-Type: application/json" --data @-
 
+kubectl get ns podinfo-kustomize -o json | \
+ jq '.spec.finalizers=[]' | \
+ curl -X PUT http://localhost:8001/api/v1/namespaces/podinfo-kustomize/finalize -H "Content-Type: application/json" --data @-
+
 export GITHUB_TOKEN=ghp_5555555555555555555555555555555555555555
 kubectl create secret generic branch-planner-token \
  --namespace=flux-system \
@@ -352,3 +360,5 @@ create branch planner configmap
 if you need to recreate the tofu controller, you need to delete the tofu-controller and delete tf roles and rolebinding and recreate the tofu controller.
 
 kubectl -n flux-system get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo
+
+kubectl -n argocd rollout restart deployment/argocd-server

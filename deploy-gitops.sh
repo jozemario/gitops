@@ -108,7 +108,7 @@ EOF
 # kubectl apply -k bases/ingress-nginx/
 helm repo add tofu-controller https://flux-iac.github.io/tofu-controller/
 helm repo update
-kubectl apply -f tofu-controller/release.yaml
+kubectl apply -f bases/tofu-controller/release.yaml
 #install cert-manager
 kubectl apply -k bases/cert-manager/
 
@@ -195,3 +195,20 @@ kubectl apply -k branch-planner/
 # kubectl create secret generic branch-planner-token \
 #  --namespace=flux-system \
 #  --from-literal="token=${GITHUB_TOKEN}"
+
+# traefik ssl config letsencrypt 
+kubectl apply -f bases/traefik/helm-chart-config.yaml
+kubectl apply -f bases/traefik/argocd-cmd-params-cm.yaml
+echo "🔄 Deleting argocd-server pod to restart it with the new config..."
+kubectl get pods -n argocd
+echo "kubectl delete po argocd-server-xxxx-yyyy -n argocd"
+# kubectl delete po argocd-server-xxxx-yyyy -n argocd
+echo "🔄 Apply argocd-ingress.yaml"
+echo "kubectl apply -f bases/traefik/argocd-ingress.yaml"
+# kubectl apply -f bases/traefik/argocd-ingress.yaml
+kubectl apply -f bases/traefik/argocd-ingress-kubernetes.yaml
+kubectl apply -f bases/traefik/cluster-issuer-staging.yaml
+kubectl apply -f bases/traefik/cluster-issuer-production.yaml
+kubectl get ClusterIssuer -A
+kubectl describe clusterissuer letsencrypt-staging
+kubectl describe clusterissuer letsencrypt-production

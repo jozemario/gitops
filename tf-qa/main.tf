@@ -66,3 +66,42 @@ resource "kubernetes_service" "nginx" {
     }
   }
 }
+
+resource "kubernetes_ingress_v1" "nginx" {
+  metadata {
+    name      = "nginx"
+    namespace = "qa"
+    annotations = {
+      "cert-manager.io/cluster-issuer" = "letsencrypt-production"
+      "kubernetes.io/ingress.class"    = "traefik"
+    }
+    labels = {
+      app = "nginx"
+    }
+  }
+
+  spec {
+    rule {
+      host = "isp.mghcloud.com"  # Change to your domain
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "nginx"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+
+    tls {
+      hosts = ["isp.mghcloud.com"]
+      secret_name = "isp-mghcloud-com-tls"
+    }
+  }
+}
