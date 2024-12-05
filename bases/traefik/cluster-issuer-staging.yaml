@@ -14,4 +14,3 @@ spec:
         http01:
           ingress:
             class: traefik
-#  kubectl apply -f bases/traefik/cluster-issuer-staging.yaml

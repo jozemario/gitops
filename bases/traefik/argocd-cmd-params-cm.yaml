@@ -6,5 +6,11 @@ metadata:
   labels:
     app.kubernetes.io/name: argocd-cmd-params-cm
     app.kubernetes.io/part-of: argocd
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"argocd-cmd-params-cm","app.kubernetes.io/part-of":"argocd"},"name":"argocd-cmd-params-cm","namespace":"argocd"},"data":{"server.insecure":"true","server.disable.tls":"true","server.listen.address":"0.0.0.0","server.basehref":"/"}}
 data:
   server.insecure: "true"
+  server.disable.tls: "true"
+  server.listen.address: "0.0.0.0"
+  server.basehref: "/"

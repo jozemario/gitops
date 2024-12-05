@@ -1,3 +1,30 @@
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: TLSStore
+# metadata:
+#   name: default
+#   namespace: kube-system
+# spec:
+#   defaultCertificate:
+#     secretName: wildcard-mghcloud-com-xbjjn
+
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: traefik-config
+#   labels:
+#     name: traefik-config
+#   namespace: kube-system
+# data:
+#   traefik-config.yaml: |
+#     # https://doc.traefik.io/traefik/https/tls/
+#     tls:
+#       stores:
+#         default:
+#           defaultCertificate:
+#             certFile: '/certs/tls.crt'
+#             keyFile: '/certs/tls.key'
+---
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
@@ -10,28 +37,18 @@ spec:
       - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--log.level=DEBUG"
-      # - "--certificatesresolvers.myresolver.acme.email=josezero1@gmail.com"
-      # - "--certificatesresolvers.myresolver.acme.storage=acme.json"
-      # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      # - "--certificatesresolvers.myresolver.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+      # - "--providers.file.filename=/config/traefik-config.yaml"
     ports:
       traefik:
         expose: true
     providers:
       kubernetesCRD:
         allowCrossNamespace: true
-
-    # entryPoints:
-    #   web:
-    #     address: ":80"
-
-    #   websecure:
-    #     address: ":443"
-
-    # certificatesResolvers:
-    #   myresolver:
-    #     acme:
-    #       email: josezero1@gmail.com
-    #       storage: acme.json
-    #       httpChallenge:
-    #         entryPoint: web
+    # additionalArguments:
+    # volumes:
+    #   - name: wildcard-mghcloud-com-xbjjn
+    #     mountPath: '/certs'
+    #     type: secret
+    #   - name: traefik-config
+    #     mountPath: '/config'
+    #     type: configMap

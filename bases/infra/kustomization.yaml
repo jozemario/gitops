@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: argocd
 resources:
   - install.yaml
-images:
-  - name: quay.io/argoproj/argocd:v2.8.0
-    newName: ghcr.io/flux-subsystem-argo/fsa/argocd
-    newTag: v2.8.0-fl.15-main-aef83705
+# images:
+#   - name: quay.io/argoproj/argocd:v2.8.0
+#     newName: ghcr.io/flux-subsystem-argo/fsa/argocd
+#     newTag: v2.8.0-fl.15-main-aef83705

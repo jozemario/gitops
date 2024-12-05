@@ -31,8 +31,8 @@ check_command argocd
 # Install ArgoCD
 echo "📦 Installing ArgoCD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
-
+# kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
+kubectl apply -n argocd -k bases/infra/
 # Wait for ArgoCD to be ready
 echo "⏳ Waiting for ArgoCD to be ready..."
 sleep 30
@@ -42,7 +42,7 @@ check_deployment_ready argocd argocd-server
 echo "🦩 Installing Flamingo..."
 # wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
 # kubectl apply -n argocd -f https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
-kubectl apply -n argocd -k bases/infra/
+# kubectl apply -n argocd -k bases/infra/
 # Install FluxCD
 echo "🔄 Installing FluxCD..."
 flux install
@@ -199,16 +199,25 @@ kubectl apply -k branch-planner/
 # traefik ssl config letsencrypt 
 kubectl apply -f bases/traefik/helm-chart-config.yaml
 kubectl apply -f bases/traefik/argocd-cmd-params-cm.yaml
-echo "🔄 Deleting argocd-server pod to restart it with the new config..."
+echo "🔄 Restart argocd-server pod to restart it with the new config..."
 kubectl get pods -n argocd
-echo "kubectl delete po argocd-server-xxxx-yyyy -n argocd"
+kubectl -n argocd rollout restart deployment/argocd-server
+# echo "kubectl delete po argocd-server-xxxx-yyyy -n argocd"
 # kubectl delete po argocd-server-xxxx-yyyy -n argocd
-echo "🔄 Apply argocd-ingress.yaml"
-echo "kubectl apply -f bases/traefik/argocd-ingress.yaml"
-# kubectl apply -f bases/traefik/argocd-ingress.yaml
-kubectl apply -f bases/traefik/argocd-ingress-kubernetes.yaml
 kubectl apply -f bases/traefik/cluster-issuer-staging.yaml
 kubectl apply -f bases/traefik/cluster-issuer-production.yaml
 kubectl get ClusterIssuer -A
 kubectl describe clusterissuer letsencrypt-staging
 kubectl describe clusterissuer letsencrypt-production
+
+kubectl apply -f bases/traefik/wildcard-certificate.yaml
+kubectl describe certificate -n kube-system
+
+echo "🔄 Apply argocd-ingress.yaml"
+echo "kubectl apply -f bases/traefik/argocd-ingress.yaml"
+# kubectl apply -f bases/traefik/argocd-ingress.yaml
+
+kubectl apply -f bases/traefik/argocd-ingress.yaml
+
+#### storage longhorn
+kubectl apply -f bases/storage/longhorn.yaml
