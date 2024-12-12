@@ -1,4 +1,3 @@
-
 terraform {
   required_version = ">= 1.3.9"
 
@@ -76,6 +75,11 @@ resource "kubernetes_deployment" "mariadb" {
             sub_path = "my.cnf"
           }
 
+          volume_mount {
+            mount_path = "/docker-entrypoint-initdb.d"
+            name       = "mariadb-init"
+          }
+
         }
         volume {
           name = "mariadb-pvc"
@@ -88,6 +92,17 @@ resource "kubernetes_deployment" "mariadb" {
           name = "mariadb-config"
           config_map {
             name = "mariadb"
+          }
+        }
+
+        volume {
+          name = "mariadb-init"
+          config_map {
+            name = "mariadb"
+            items {
+              key = "init.sql"
+              path = "init.sql"
+            }
           }
         }
 
@@ -132,6 +147,16 @@ resource "kubernetes_config_map" "mariadb" {
   }
   data = {
     "my.cnf" = file("${path.module}/my.cnf")
+    "init.sql" = <<-EOF
+      USE mysql;
+      FLUSH PRIVILEGES;
+      ALTER USER 'root'@'localhost' IDENTIFIED BY '${module.shared.config.mariadb_root_password}';
+      CREATE USER 'root'@'%' IDENTIFIED BY '${module.shared.config.mariadb_root_password}';
+      GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+      CREATE USER '${module.shared.config.mariadb_user}'@'%' IDENTIFIED BY '${module.shared.config.mariadb_password}';
+      GRANT ALL PRIVILEGES ON ${module.shared.config.mariadb_database}.* TO '${module.shared.config.mariadb_user}'@'%';
+      FLUSH PRIVILEGES;
+    EOF
   }
 }
 
