@@ -11,6 +11,10 @@ terraform {
   
 }
 
+module "shared" {
+  source = "../../shared"
+}
+
 resource "kubernetes_deployment" "mariadb" {
   metadata {
     name      = "mariadb"
@@ -40,19 +44,19 @@ resource "kubernetes_deployment" "mariadb" {
           name  = "mariadb-container"
           env {
             name  = "MYSQL_DATABASE"
-            value = output.config.mariadb_database
+            value = module.shared.config.mariadb_database
           }
           env {
             name  = "MYSQL_USER"
-            value = output.config.mariadb_user
+            value = module.shared.config.mariadb_user
           }
           env {
             name  = "MYSQL_PASSWORD"
-            value = output.config.mariadb_password
+            value = module.shared.config.mariadb_password
           }
           env {
             name  = "MYSQL_ROOT_PASSWORD"
-            value = output.config.mariadb_root_password
+            value = module.shared.config.mariadb_root_password
           }
 
           port {
