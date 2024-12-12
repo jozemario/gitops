@@ -1,6 +1,6 @@
-module "shared" {
-  source = "./shared"
-}
+# module "shared" {
+#   source = "./shared"
+# }
 
 module "mghcloud" {
   source = "./mghcloud"
