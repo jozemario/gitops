@@ -15,8 +15,8 @@ resource "kubernetes_deployment" "nginx" {
     namespace = "qa"
     labels = {
       environment = "qa"
-      app        = "nginx"
-      managed-by = "terraform"
+      app         = "nginx"
+      managed-by  = "terraform"
     }
   }
   spec {
@@ -52,21 +52,22 @@ resource "kubernetes_deployment" "nginx" {
             mount_path = "/usr/share/nginx/html"
           }
         }
-      }
+        volume {
+          name = "nginx-config"
+          config_map {
+            name = "nginx"
+          }
+        }
 
-      volume {
-        name = "nginx-config"
-        config_map {
-          name = "nginx"
+        volume {
+          name = "nginx-pvc"
+          persistent_volume_claim {
+            claim_name = "nginx-pvc"
+          }
         }
       }
 
-      volume {
-        name = "nginx-pvc"
-        persistent_volume_claim {
-          claim_name = "nginx-pvc"
-        }
-      }
+
     }
   }
 }
@@ -76,8 +77,8 @@ resource "kubernetes_service" "nginx" {
     namespace = "qa"
     labels = {
       environment = "qa"
-      app        = "nginx"
-      managed-by = "terraform"
+      app         = "nginx"
+      managed-by  = "terraform"
     }
   }
   spec {
@@ -138,8 +139,8 @@ resource "kubernetes_persistent_volume_claim" "nginx" {
     namespace = "qa"
     labels = {
       environment = "qa"
-      app        = "nginx"
-      managed-by = "terraform"
+      app         = "nginx"
+      managed-by  = "terraform"
     }
   }
   spec {
@@ -159,11 +160,12 @@ resource "kubernetes_config_map" "nginx" {
     namespace = "qa"
     labels = {
       environment = "qa"
-      app        = "nginx"
-      managed-by = "terraform"
+      app         = "nginx"
+      managed-by  = "terraform"
     }
   }
   data = {
     "nginx.conf" = file("${path.module}/nginx.conf")
   }
 }
+
