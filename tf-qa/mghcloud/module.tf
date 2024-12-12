@@ -9,3 +9,7 @@ module "mariadb" {
 module "postgres" {
   source = "./postgres"
 }
+
+module "wordpress" {
+  source = "./wordpress"
+}
