@@ -10,6 +10,6 @@ module "mariadb" {
   source = "./mariadb"
 }
 
-# module "wordpress" {
-#   source = "./wordpress"
-# }
+module "wordpress" {
+  source = "./wordpress"
+}
