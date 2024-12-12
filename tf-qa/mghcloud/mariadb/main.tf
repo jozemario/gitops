@@ -71,9 +71,9 @@ resource "kubernetes_deployment" "mariadb" {
           }
 
           volume_mount {
-            mount_path = "/etc/mysql/conf.d"
+            mount_path = "/etc/mysql/conf.d/my.cnf"
             name = "mariadb-config"
-            sub_path = "mariadb.cnf"
+            sub_path = "my.cnf"
           }
 
         }
@@ -131,7 +131,7 @@ resource "kubernetes_config_map" "mariadb" {
     }
   }
   data = {
-    "mariadb.cnf" = file("${path.module}/mariadb.cnf")
+    "my.cnf" = file("${path.module}/my.cnf")
   }
 }
 
