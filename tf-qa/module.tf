@@ -1,0 +1,3 @@
+module "mghcloud" {
+  source = "./mghcloud"
+}
