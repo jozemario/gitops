@@ -150,11 +150,19 @@ resource "kubernetes_config_map" "mariadb" {
     "init.sql" = <<-EOF
       USE mysql;
       FLUSH PRIVILEGES;
+      
+      -- Drop existing users if they exist
+      DROP USER IF EXISTS 'root'@'%';
+      DROP USER IF EXISTS '${module.shared.config.mariadb_user}'@'%';
+      
+      -- Create users and set privileges
       ALTER USER 'root'@'localhost' IDENTIFIED BY '${module.shared.config.mariadb_root_password}';
       CREATE USER 'root'@'%' IDENTIFIED BY '${module.shared.config.mariadb_root_password}';
       GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+      
       CREATE USER '${module.shared.config.mariadb_user}'@'%' IDENTIFIED BY '${module.shared.config.mariadb_password}';
       GRANT ALL PRIVILEGES ON ${module.shared.config.mariadb_database}.* TO '${module.shared.config.mariadb_user}'@'%';
+      
       FLUSH PRIVILEGES;
     EOF
   }
