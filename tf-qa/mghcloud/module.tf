@@ -5,3 +5,7 @@ module "frontend" {
 module "mariadb" {
   source = "./mariadb"
 }
+
+module "postgres" {
+  source = "./postgres"
+}
