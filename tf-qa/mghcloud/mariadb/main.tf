@@ -157,39 +157,3 @@ resource "kubernetes_persistent_volume_claim" "mariadb" {
 }
 
 
-resource "kubernetes_ingress_v1" "mariadb" {
-  metadata {
-    name      = "mariadb"
-    namespace = "qa"
-    annotations = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-production"
-      "kubernetes.io/ingress.class"    = "traefik"
-    }
-    labels = {
-      app = "mariadb"
-    }
-  }
-  spec {
-    rule {
-      host = "mariadb.qa.mghcloud.com"
-      http {
-        path {
-          path = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = "mariadb"
-              port {
-                number = 3306
-              }
-            }
-          }
-        }
-      }
-    }
-    tls {
-      hosts = ["mariadb.qa.mghcloud.com"]
-      secret_name = "mariadb-qa-mghcloud-com-tls"
-    }
-  }
-}
