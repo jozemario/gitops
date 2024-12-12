@@ -20,7 +20,7 @@ resource "kubernetes_deployment" "nginx" {
     }
   }
   spec {
-    replicas = 2
+    replicas = 3
     selector {
       match_labels = {
         app = "MyTestApp"
@@ -66,8 +66,6 @@ resource "kubernetes_deployment" "nginx" {
           }
         }
       }
-
-
     }
   }
 }
