@@ -6,11 +6,14 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30s
-  url: https://github.com/jozemario/gitops
-  ref:
-    branch: main
+  # url: https://github.com/jozemario/gitops
   secretRef:
     name: branch-planner-token
+  url: ssh://git@github.com/jozemario/gitops
+  ref:
+    branch: main
+  # secretRef:
+  # name: branch-planner-token
 ---
 apiVersion: infra.contrib.fluxcd.io/v1alpha2
 kind: Terraform
