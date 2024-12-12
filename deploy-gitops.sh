@@ -32,6 +32,8 @@ check_command argocd
 echo "📦 Installing ArgoCD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 # kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
+# kubectl delete -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.8.0/manifests/install.yaml
+
 kubectl apply -n argocd -k bases/infra/
 # Wait for ArgoCD to be ready
 echo "⏳ Waiting for ArgoCD to be ready..."
@@ -42,7 +44,7 @@ check_deployment_ready argocd argocd-server
 echo "🦩 Installing Flamingo..."
 # wget https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
 # kubectl apply -n argocd -f https://raw.githubusercontent.com/flux-subsystem-argo/flamingo/release-v2.8/release/kustomization.yaml
-# kubectl apply -n argocd -k bases/infra/
+kubectl apply -n argocd -k bases/infra/
 # Install FluxCD
 echo "🔄 Installing FluxCD..."
 flux install
@@ -56,7 +58,7 @@ kubectl create namespace staging
 kubectl create namespace production
 kubectl create namespace qa
 
-# argocd app list --server localhost:8080
+argocd app list --server localhost:8080
 # argocd repo add git@github.com:jozemario/gitops.git --server localhost:8080 --ssh-private-key-path ~/.ssh/id_ed25519
 
 cat <<EOF | kubectl apply -f -
@@ -219,5 +221,14 @@ echo "kubectl apply -f bases/traefik/argocd-ingress.yaml"
 
 kubectl apply -f bases/traefik/argocd-ingress.yaml
 
-#### storage longhorn
-kubectl apply -f bases/storage/longhorn.yaml
+
+# registry
+apt -y install docker-registry
+apt -y install apache2-utils
+htpasswd -Bc /etc/docker/registry/.htpasswd mghcloud
+nano /etc/docker/registry/config.yml
+nano /etc/docker/daemon.json
+
+
+
+###nfs

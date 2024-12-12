@@ -269,7 +269,7 @@ Provide instructions for accessing the ArgoCD UI
 YM8k6f9NBSq-ASEs
 
 k3s
-EkEGuGV7VcIYyRqL
+HyeYsI1FiWzCKoPk
 
 🌐 Setting up port forwarding for ArgoCD UI...
 Run the following command in a new terminal to access ArgoCD UI:
@@ -322,6 +322,7 @@ kubectl apply -k bases/storage/
 kubectl patch ns <Namespace_to_delete> -p '{"metadata":{"finalizers":null}}'
 
 kubectl patch ns dev -p '{"metadata":{"finalizers":null}}'
+kubectl patch ns argocd -p '{"metadata":{"finalizers":null}}'
 
 69
 
@@ -362,3 +363,116 @@ if you need to recreate the tofu controller, you need to delete the tofu-control
 kubectl -n flux-system get secret helloworld-outputs -o jsonpath="{.data.hello_world}" | base64 -d; echo
 
 kubectl -n argocd rollout restart deployment/argocd-server
+
+---
+
+kubectl get ns delete-me -o json | \
+ jq '.spec.finalizers=[]' | \
+ curl -X PUT http://localhost:8001/api/v1/namespaces/delete-me/finalize -H "Content-Type: application/json" --data @-
+
+kubectl delete all -n <namespace> --all
+$ kubectl -n $NS patch $resource_name -p '{"metadata":{"finalizers":null}}' --type=merge
+
+$ kubectl -n argocd patch argocd-redis-network-policy -p '{"metadata":{"finalizers":null}}' --type=merge
+
+---
+
+---
+
+## NFS server
+
+---
+
+## sudo apt install nfs-kernel-server
+
+Configure NFS Server to share directories on your Network.
+This example is based on the environment like follows.
++----------------------+ | +----------------------+
+| [ NFS Server ] |10.0.0.30 | 10.0.0.51| [ NFS Client ] |
+| dlp.srv.world +----------+----------+ node01.srv.world |
+| | | |
++----------------------+ +----------------------+
+
+[1] Configure NFS Server.
+
+root@dlp:~# apt -y install nfs-kernel-server
+root@dlp:~# vi /etc/idmapd.conf
+
+# line 5 : uncomment and change to your domain name
+
+Domain = srv.world
+root@dlp:~# vi /etc/exports
+
+# add settings for NFS exports
+
+# for example, set [/home/nfsshare] as NFS share
+
+/home/nfsshare 10.0.0.0/24(rw,no_root_squash)
+root@dlp:~# mkdir /home/nfsshare
+root@dlp:~# systemctl restart nfs-server
+
+## NFS client K3s
+
+This example is based on the environment like follows.
++----------------------+ | +----------------------+
+| [ NFS Server ] |10.0.0.30 | 10.0.0.51| [ NFS Client ] |
+| dlp.srv.world +----------+----------+ node01.srv.world |
+| | | |
++----------------------+ +----------------------+
+
+[1] Configure NFS Client.
+root@node01:~# apt -y install nfs-common
+root@node01:~# vi /etc/idmapd.conf
+
+# line 5 : uncomment and change to your domain name
+
+Domain = srv.world
+root@node01:~# mount -t nfs dlp.srv.world:/home/nfsshare /mnt
+root@node01:~# df -hT
+Filesystem Type Size Used Avail Use% Mounted on
+tmpfs tmpfs 393M 1.1M 392M 1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv ext4 27G 5.6G 20G 23% /
+tmpfs tmpfs 2.0G 0 2.0G 0% /dev/shm
+tmpfs tmpfs 5.0M 0 5.0M 0% /run/lock
+/dev/vda2 ext4 2.0G 125M 1.7G 7% /boot
+tmpfs tmpfs 393M 4.0K 393M 1% /run/user/0
+dlp.srv.world:/home/nfsshare nfs4 27G 5.6G 20G 23% /mnt
+
+# NFS share is mounted
+
+# if mount with NFSv3, add [-o vers=3] option
+
+## root@node01:~# mount -t nfs -o vers=3 dlp.srv.world:/home/nfsshare /mnt
+
+## K3s with NFS
+
+First make sure to install the required package which is nfs-kernel-server since I am on piOS, installing it can be as easy as running the following command
+
+sudo apt install nfs-kernel-server
+Once you got it installed and ready on all your nods, you need to create a new manifests for K3s to automatically pick it up.
+
+## You can create a file called nfs-controller.yml inside /var/lib/rancher/k3s/server/manifests/ and then add the following code to it:
+
+apiVersion: v1
+kind: Namespace
+metadata:
+name: default
+
+---
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+name: nfs
+namespace: default
+spec:
+chart: nfs-subdir-external-provisioner
+repo: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+targetNamespace: default
+set:
+storageClass.name: nfs
+valuesContent: |-
+nfs:
+server: 192.168.68.118
+path: /i-data/f01e5fea/nfs/k3s
+mountOptions: - nfsvers=3
