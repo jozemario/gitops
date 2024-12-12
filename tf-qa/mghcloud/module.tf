@@ -2,6 +2,6 @@ module "frontend" {
   source = "./frontend"
 }
 
-module "mariadb" {
-  source = "./mariadb"
-}
+# module "mariadb" {
+#   source = "./mariadb"
+# }

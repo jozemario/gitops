@@ -23,13 +23,13 @@ resource "kubernetes_deployment" "nginx" {
     replicas = 2
     selector {
       match_labels = {
-        app = "MyTestApp"
+        app = "nginx"
       }
     }
     template {
       metadata {
         labels = {
-          app = "MyTestApp"
+          app = "nginx"
         }
       }
       spec {
