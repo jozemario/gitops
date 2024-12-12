@@ -1,7 +1,3 @@
-module "shared" {
-  source = "../shared"
-}
-
 module "frontend" {
   source = "./frontend"
 }
