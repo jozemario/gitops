@@ -26,16 +26,16 @@ resource "kubernetes_deployment" "mariadb" {
     }
   }
   spec {
-    replicas = 2
+    replicas = 1
     selector {
       match_labels = {
-        app = "mariadbApp"
+        app = "mariadb"
       }
     }
     template {
       metadata {
         labels = {
-          app = "mariadbApp"
+          app = "mariadb"
         }
       }
       spec {
