@@ -1,0 +1,42 @@
+[mysqld]
+# Basic Settings
+user                    = mysql
+pid-file                = /var/run/mysqld/mysqld.pid
+socket                  = /var/run/mysqld/mysqld.sock
+port                    = 3306
+basedir                 = /usr
+datadir                 = /var/lib/mysql
+tmpdir                  = /tmp
+bind-address            = 0.0.0.0
+
+# Character Set
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_general_ci
+
+# InnoDB Settings
+default_storage_engine  = InnoDB
+innodb_buffer_pool_size = 256M
+innodb_log_file_size   = 64M
+innodb_file_per_table  = 1
+innodb_flush_method    = O_DIRECT
+
+# Connection Settings
+max_connections        = 151
+max_allowed_packet    = 16M
+
+# Query Cache
+query_cache_size      = 16M
+query_cache_type      = 1
+
+# Logging
+log_error            = /var/log/mysql/error.log
+slow_query_log       = 1
+slow_query_log_file  = /var/log/mysql/mariadb-slow.log
+long_query_time      = 10
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+
