@@ -2,14 +2,14 @@ module "frontend" {
   source = "./frontend"
 }
 
-module "mariadb" {
-  source = "./mariadb"
-}
-
 module "postgres" {
   source = "./postgres"
 }
 
-module "wordpress" {
-  source = "./wordpress"
-}
+# module "mariadb" {
+#   source = "./mariadb"
+# }
+
+# module "wordpress" {
+#   source = "./wordpress"
+# }
