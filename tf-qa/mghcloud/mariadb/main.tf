@@ -73,6 +73,7 @@ resource "kubernetes_deployment" "mariadb" {
           volume_mount {
             mount_path = "/etc/mysql/conf.d"
             name = "mariadb-config"
+            sub_path = "mariadb.cnf"
           }
 
         }
@@ -86,7 +87,7 @@ resource "kubernetes_deployment" "mariadb" {
         volume {
           name = "mariadb-config"
           config_map {
-            name = "mariadb-config"
+            name = "mariadb"
           }
         }
 
@@ -107,7 +108,7 @@ resource "kubernetes_service" "mariadb" {
   }
   spec {
     selector = {
-      app = "mariadbApp"
+      app = "mariadb"
     }
     type = "NodePort"
     port {
@@ -119,17 +120,22 @@ resource "kubernetes_service" "mariadb" {
   }
 }
 
-resource "kubernetes_config_map" "mariadb-config" {
+resource "kubernetes_config_map" "mariadb" {
   metadata {
-    name      = "mariadb-config"
+    name      = "mariadb"
     namespace = "qa"
+    labels = {
+      environment = "qa"
+      app         = "mariadb"
+      managed-by  = "terraform"
+    }
   }
   data = {
     "mariadb.cnf" = file("${path.module}/mariadb.cnf")
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "mariadb-pvc" {
+resource "kubernetes_persistent_volume_claim" "mariadb" {
   metadata {
     name      = "mariadb-pvc"
     namespace = "qa"
@@ -169,6 +175,7 @@ resource "kubernetes_ingress_v1" "mariadb" {
       http {
         path {
           path = "/"
+          path_type = "Prefix"
           backend {
             service {
               name = "mariadb"
@@ -179,6 +186,10 @@ resource "kubernetes_ingress_v1" "mariadb" {
           }
         }
       }
+    }
+    tls {
+      hosts = ["mariadb.qa.mghcloud.com"]
+      secret_name = "mariadb-qa-mghcloud-com-tls"
     }
   }
 }
