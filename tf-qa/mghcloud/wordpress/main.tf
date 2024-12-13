@@ -81,8 +81,8 @@ resource "kubernetes_deployment" "wordpress" {
             value = module.shared.config.wordpress_db_host
           }
           env {
-            name = "WORDPRESS_DB_PORT"
-            value = module.shared.config.wordpress_db_port
+            name = "WORDPRESS_DB_USER"
+            value = module.shared.config.wordpress_db_user
           }
           env {
              name  = "WORDPRESS_DB_PASSWORD"
