@@ -74,7 +74,7 @@ resource "kubernetes_deployment" "wordpress" {
       }
       spec {
         container {
-          image = "wordpress:6.7.1-php8.1-fpm"
+          image = "wordpress:6.7.1-php8.1-apache"
           name  = "wordpress-container"
           env {
             name  = "WORDPRESS_DB_HOST"
