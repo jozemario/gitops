@@ -32,6 +32,31 @@ module "shared" {
 #   }
 # }
 
+resource "kubernetes_config_map" "vault-env" {
+  metadata {
+    name      = "vault-env"
+    namespace = "qa"
+    labels = {
+      environment = "qa"
+      app         = "vault"
+      managed-by  = "terraform"
+    }
+  }
+
+  data = {
+    VAULT_DOMAIN       = "vault.mghcloud.com"
+    VAULT_API_ADDR     = "http://201.205.178.45:30300"
+    VAULT_CLUSTER_ADDR = "http://201.205.178.45:30301"
+    VAULT_ADDR         = "http://201.205.178.45:30300"
+    MYSQL_HOST         = "201.205.178.45"
+    MYSQL_PORT         = "30005"
+    MYSQL_DATABASE     = "vaultdb"
+    MYSQL_USER        = "root"
+    MYSQL_PASSWORD   = "change-me"
+
+  }
+}
+
 resource "kubernetes_deployment" "vault" {
   metadata {
     name      = "vault"
@@ -280,24 +305,4 @@ resource "kubernetes_config_map" "vault-config" {
   }
 }   
 
-resource "kubernetes_config_map" "vault-env" {
-  metadata {
-    name      = "vault-env"
-    namespace = "qa"
-    labels = {
-      environment = "qa"
-      app         = "vault"
-      managed-by  = "terraform"
-    }
-  }
 
-  data = {
-    VAULT_DOMAIN       = "vault.mghcloud.com"
-    VAULT_API_ADDR     = "http://201.205.178.45:30300"
-    VAULT_CLUSTER_ADDR = "http://201.205.178.45:30301"
-    VAULT_ADDR         = "http://201.205.178.45:30300"
-    MYSQL_HOST         = "201.205.178.45"
-    MYSQL_PORT         = "30005"
-    MYSQL_DATABASE     = "vaultdb"
-  }
-}
