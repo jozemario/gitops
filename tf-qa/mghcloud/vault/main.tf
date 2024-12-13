@@ -14,205 +14,84 @@ module "shared" {
   source = "../../shared"
 }
 
-# resource "kubernetes_secret" "vault-secrets" {
-#   metadata {
-#     name      = "vault-secrets"
-#     namespace = "qa"
-#     labels = {
-#       environment = "qa"
-#       app         = "vault"
-#       managed-by  = "terraform"
-#     }
-#   }
+data "template_file" "vault" {
+	template =   file("${path.module}/chart-values.yml")
+}
 
-#   data = {
-#     MYSQL_USER     = "root"
-#     MYSQL_PASSWORD = "change-me"  # Replace with actual secret management
-#     VAULT_TOKEN    = ""
-#   }
-# }
-
-resource "kubernetes_config_map" "vault-env" {
+resource "kubernetes_secret" "vault-storage-config" {
   metadata {
-    name      = "vault-env"
+    name      = "vault-storage-config"
     namespace = "qa"
-    labels = {
-      environment = "qa"
-      app         = "vault"
-      managed-by  = "terraform"
-    }
   }
-
   data = {
-    VAULT_DOMAIN       = "vault.mghcloud.com"
-    VAULT_API_ADDR     = "http://201.205.178.45:30300"
-    VAULT_CLUSTER_ADDR = "http://201.205.178.45:30301"
-    VAULT_ADDR         = "http://201.205.178.45:30300"
-    MYSQL_HOST         = "201.205.178.45"
-    MYSQL_PORT         = "30005"
-    MYSQL_DATABASE     = "vaultdb"
-    MYSQL_USER        = "root"
-    MYSQL_PASSWORD   = "change-me"
-
+    "config.hcl" = file("${path.module}/config.hcl")
   }
 }
 
-resource "kubernetes_deployment" "vault" {
-  metadata {
-    name      = "vault"
-    namespace = "qa"
-    labels = {
-      environment = "qa"
-      app         = "vault"
-      managed-by  = "terraform"
-    }
+resource "helm_release" "vault" {
+  chart = "hashicorp/vault"
+  name = "vault"
+  repository = "https://helm.releases.hashicorp.com"
+  version   = "0.29.1"
+  namespace = "qa"
+
+  values = [
+  	data.template_file.vault.rendered
+  ]
+
+  set {
+    name = "server.service.dataStorage.storageClass"
+    value = "nfs"
   }
-  spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "vault"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "vault"
-        }
-      }
-      spec {
-        init_container {
-          name  = "vault-init"
-          image = "vault:1.15.1"
-        
-        env {
-          name  = "VAULT_ADDR"
-          value = kubernetes_config_map.vault-env.data["VAULT_ADDR"]
-        }
-        env {
-          name  = "MY_VAULT_TOKEN"
-          value = "my-secure-token"
-        #   value = kubernetes_secret.vault-secrets.data["VAULT_TOKEN"]
-        }
-        
-        volume_mount {
-          name       = "vault-init-script"
-          mount_path = "/usr/local/bin/vault-init.sh"
-          sub_path   = "vault-init.sh"
-        }
+  set {
+    name = "server.service.dataStorage.size"
+    value = "1Gi"
+  } 
 
-        volume_mount {
-            name       = "vault-pvc"
-            mount_path = "/vault/file/vault-root-token"
-            sub_path   = "vault-root-token"
-        }
-
-        volume_mount {
-            name       = "vault-pvc"
-            mount_path = "/vault/file"
-            sub_path   = "data"
-        }
-
-        command = ["/usr/local/bin/vault-init.sh"]
-        }
-
-
-        container {     
-          image = "vault:1.15.1"
-          name  = "vault-container"
-          port {
-            container_port = 8200
-          }
-
-          env {
-            name  = "VAULT_ADDR"
-            value = "http://0.0.0.0:8200"
-          }
-
-          volume_mount {
-            name       = "vault-config"
-            mount_path = "/vault/config/config.hcl"
-            sub_path   = "config.hcl"
-          }
-
-          volume_mount {
-            name       = "vault-pvc"
-            mount_path = "/vault/file"
-            sub_path   = "data"
-          }
-
-          security_context {
-            capabilities {
-              add = ["IPC_LOCK"]
-            }
-          }
-          command = ["server"]
-        
-        }
-
-        restart_policy = "Always"
-
-        volume {
-          name = "vault-config"
-          config_map {
-            name = "vault-config"
-          }
-        }
-
-        volume {
-          name = "vault-pvc"
-          persistent_volume_claim {
-            claim_name = "vault-pvc"
-          }
-        }
-
-        service_account_name = "vault"
-
-        # security_context {
-        #   run_as_non_root = true
-        #   run_as_user     = 1000
-        # }
-
-        # termination_grace_period_seconds = 30
-
-
-      }
-    }
+  set {
+    name = "server.service.type"
+    value = "NodePort"
   }
 
-}
-
-resource "kubernetes_service" "vault" {
-  metadata {
-    name      = "vault"
-    namespace = "qa"
-    labels = {
-      environment = "qa"
-      app         = "vault"
-      managed-by  = "terraform"
-    }
+  set {
+    name = "server.service.nodePort"
+    value = "30300"
   }
-  spec {
-    selector = {
-      app = "vault"
-    }
-    port {
-      port        = 8200
-      target_port = 8200
-      protocol    = "TCP"
-      name        = "vault"
-      node_port   = 30300
-    }
+
+  set {
+    name = "server.volumes[0].name"
+    value = "userconfig-vault-storage-config"
+  }
+  set {
+    name = "server.volumes[0].secret.defaultMode"
+    value = "420"
+  }
+  set {
+    name = "server.volumes[0].secret.secretName"
+    value = "vault-storage-config"
+  }
+  set {
+    name = "server.volumeMounts[0].mountPath"
+    value = "/vault/userconfig/vault-storage-config"
+  }
+  set {
+    name = "server.volumeMounts[0].name"
+    value = "userconfig-vault-storage-config"
+  }
+  set {
+    name = "server.volumeMounts[0].readOnly"
+    value = "true"
+  }
+  set {
+    name = "server.extraArgs"
+    value = "-config=/vault/userconfig/vault-storage-config/config.hcl"
+  }
+
+  set {
+    name = "ui.enabled"
+    value = "true"
+  }
     
-    port {
-      port        = 8201
-      target_port = 8201
-      protocol    = "TCP"
-      name        = "vault-cluster"
-      node_port   = 30301
-    }
-  }
-
 }
 
 resource "kubernetes_ingress_v1" "vault" {
@@ -229,14 +108,14 @@ resource "kubernetes_ingress_v1" "vault" {
   }
   spec {
     rule {
-      host = kubernetes_config_map.vault-env.data["VAULT_DOMAIN"]
+      host = "vault.mghcloud.com"
       http {
         path {
           path = "/"
           path_type = "Prefix"
           backend {
             service {
-              name = kubernetes_service.vault.metadata[0].name
+              name = helm_release.vault.name
               port {
                 number = 8200
               }
@@ -246,7 +125,7 @@ resource "kubernetes_ingress_v1" "vault" {
       }
     }
     tls {
-      hosts = [kubernetes_config_map.vault-env.data["VAULT_DOMAIN"]]
+      hosts = ["vault.mghcloud.com"]
       secret_name = "vault-mghcloud-com-tls"
     }
   }
@@ -273,36 +152,3 @@ resource "kubernetes_persistent_volume_claim" "vault" {
     }
   }
 }
-
-
-# resource "kubernetes_service_account" "vault" {
-#   metadata {
-#     name      = "vault"
-#     namespace = "qa"
-#   }
-#   automount_service_account_token = true
-#   secret {
-#     name = "vault-secrets"
-#   }
-#   depends_on = [kubernetes_secret.vault-secrets]
-
-# }       
-
-
-
-resource "kubernetes_config_map" "vault-config" {
-  metadata {
-    name      = "vault-config"
-    namespace = "qa"
-    labels = {
-      environment = "qa"
-      app         = "vault"
-      managed-by  = "terraform"
-    }
-  }
-  data = {
-    "config.hcl" = file("${path.module}/config.hcl")
-  }
-}   
-
-
