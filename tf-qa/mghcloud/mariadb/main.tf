@@ -161,7 +161,7 @@ resource "kubernetes_config_map" "mariadb" {
       GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
       
       CREATE USER '${module.shared.config.mariadb_user}'@'%' IDENTIFIED BY '${module.shared.config.mariadb_password}';
-      GRANT ALL PRIVILEGES ON ${module.shared.config.mariadb_database}.* TO '${module.shared.config.mariadb_user}'@'%';
+      GRANT ALL PRIVILEGES ON *.* TO '${module.shared.config.mariadb_user}'@'%';
       
       FLUSH PRIVILEGES;
     EOF
