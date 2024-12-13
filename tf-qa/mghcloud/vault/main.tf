@@ -34,9 +34,9 @@ resource "kubernetes_secret" "vault-storage-config" {
 }
 
 resource "helm_release" "vault" {
-  chart = "vault"
+  chart = "hashicorp/vault"
   name = "vault"
-  repository = "https://helm.releases.hashicorp.com/hashicorp"
+  repository = "https://helm.releases.hashicorp.com"
   version   = "0.29.1"
   namespace = "qa"
 

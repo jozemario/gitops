@@ -222,6 +222,10 @@ echo "kubectl apply -f bases/traefik/argocd-ingress.yaml"
 kubectl apply -f bases/traefik/argocd-ingress.yaml
 
 
+kubectl apply -k infra-qa/ 
+kubectl apply -k infra-production 
+kubectl apply -k infra-staging   
+
 # registry
 apt -y install docker-registry
 apt -y install apache2-utils
