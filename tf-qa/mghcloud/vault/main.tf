@@ -33,71 +33,71 @@ resource "kubernetes_secret" "vault-storage-config" {
   }
 }
 
-resource "helm_release" "vault" {
-  chart = "hashicorp/vault"
-  name = "vault"
-  repository = "https://helm.releases.hashicorp.com"
-  version   = "0.29.1"
-  namespace = "qa"
+# resource "helm_release" "vault" {
+#   chart = "hashicorp/vault"
+#   name = "vault"
+#   repository = "https://helm.releases.hashicorp.com"
+#   version   = "0.29.1"
+#   namespace = "qa"
 
-  values = [
-  	data.template_file.vault.rendered
-  ]
+#   values = [
+#   	data.template_file.vault.rendered
+#   ]
 
-  set {
-    name = "server.service.dataStorage.storageClass"
-    value = "nfs"
-  }
-  set {
-    name = "server.service.dataStorage.size"
-    value = "1Gi"
-  } 
+#   set {
+#     name = "server.service.dataStorage.storageClass"
+#     value = "nfs"
+#   }
+#   set {
+#     name = "server.service.dataStorage.size"
+#     value = "1Gi"
+#   } 
 
-  set {
-    name = "server.service.type"
-    value = "NodePort"
-  }
+#   set {
+#     name = "server.service.type"
+#     value = "NodePort"
+#   }
 
-  set {
-    name = "server.service.nodePort"
-    value = "30300"
-  }
+#   set {
+#     name = "server.service.nodePort"
+#     value = "30300"
+#   }
 
-  set {
-    name = "server.volumes[0].name"
-    value = "userconfig-vault-storage-config"
-  }
-  set {
-    name = "server.volumes[0].secret.defaultMode"
-    value = "420"
-  }
-  set {
-    name = "server.volumes[0].secret.secretName"
-    value = "vault-storage-config"
-  }
-  set {
-    name = "server.volumeMounts[0].mountPath"
-    value = "/vault/userconfig/vault-storage-config"
-  }
-  set {
-    name = "server.volumeMounts[0].name"
-    value = "userconfig-vault-storage-config"
-  }
-  set {
-    name = "server.volumeMounts[0].readOnly"
-    value = "true"
-  }
-  set {
-    name = "server.extraArgs"
-    value = "-config=/vault/userconfig/vault-storage-config/config.hcl"
-  }
+#   set {
+#     name = "server.volumes[0].name"
+#     value = "userconfig-vault-storage-config"
+#   }
+#   set {
+#     name = "server.volumes[0].secret.defaultMode"
+#     value = "420"
+#   }
+#   set {
+#     name = "server.volumes[0].secret.secretName"
+#     value = "vault-storage-config"
+#   }
+#   set {
+#     name = "server.volumeMounts[0].mountPath"
+#     value = "/vault/userconfig/vault-storage-config"
+#   }
+#   set {
+#     name = "server.volumeMounts[0].name"
+#     value = "userconfig-vault-storage-config"
+#   }
+#   set {
+#     name = "server.volumeMounts[0].readOnly"
+#     value = "true"
+#   }
+#   set {
+#     name = "server.extraArgs"
+#     value = "-config=/vault/userconfig/vault-storage-config/config.hcl"
+#   }
 
-  set {
-    name = "ui.enabled"
-    value = "true"
-  }
+#   set {
+#     name = "ui.enabled"
+#     value = "true"
+#   }
     
-}
+# }
 
 resource "kubernetes_ingress_v1" "vault" {
   metadata {

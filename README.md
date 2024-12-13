@@ -476,3 +476,38 @@ nfs:
 server: 192.168.68.118
 path: /i-data/f01e5fea/nfs/k3s
 mountOptions: - nfsvers=3
+
+---
+
+vault helm chart
+
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm search repo hashicorp/vault
+
+kubectl -n qa create secret generic vault-storage-config \
+ --from-file=tf-qa/mghcloud/vault/config.hcl
+
+helm install vault hashicorp/vault --namespace qa \
+ --set='server.volumes[0].name=userconfig-vault-storage-config' \
+ --set='server.volumes[0].secret.defaultMode=420' \
+ --set='server.volumes[0].secret.secretName=vault-storage-config' \
+ --set='server.volumeMounts[0].mountPath=/vault/userconfig/vault-storage-config' \
+ --set='server.volumeMounts[0].name=userconfig-vault-storage-config' \
+ --set='server.volumeMounts[0].readOnly=true' \
+ --set='server.extraArgs=-config=/vault/userconfig/vault-storage-config/config.hcl' \
+ --set='server.service.dataStorage.storageClass=nfs' \
+ --set='server.service.dataStorage.size=2Gi' \
+ --set='server.service.type=NodePort' \
+ --set='server.service.nodePort=30300' \
+ --set='ui.enabled=true' \
+ --set='ui.service.type=NodePort' \
+ --set='ui.service.nodePort=30301'
+
+---
+
+Initialize Vault
+kubectl -n qa get pods -l app.kubernetes.io/name=vault
+Init vault ui
+kubectl -n qa port-forward vault-0 8200:8200
+
+kubectl -n qa exec -ti vault-0 -- vault operator init
