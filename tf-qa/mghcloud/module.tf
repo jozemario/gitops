@@ -13,3 +13,7 @@ module "mariadb" {
 module "wordpress" {
   source = "./wordpress"
 }
+
+module "vault" {
+  source = "./vault"
+}

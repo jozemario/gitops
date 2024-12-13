@@ -78,19 +78,19 @@ resource "kubernetes_deployment" "wordpress" {
           name  = "wordpress-container"
           env {
             name  = "WORDPRESS_DB_HOST"
-            value = "201.205.178.45:30005"
+            value = module.shared.config.wordpress_db_host
           }
           env {
             name = "WORDPRESS_DB_USER"
-            value = "root"
+            value = module.shared.config.wordpress_db_user
           }
           env {
              name  = "WORDPRESS_DB_PASSWORD"
-             value = "change_me"
+             value = module.shared.config.wordpress_db_password
            }
           env {
             name  = "WORDPRESS_DB_NAME"
-            value = "wordpress"
+            value = module.shared.config.wordpress_db_name
           }
           /* env {
             name  = "PUID"
