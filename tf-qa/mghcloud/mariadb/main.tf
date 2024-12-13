@@ -189,4 +189,11 @@ resource "kubernetes_persistent_volume_claim" "mariadb" {
   }
 }
 
+# USE mysql;
+# FLUSH PRIVILEGES;
+# ALTER USER 'mghcloud'@'%' IDENTIFIED BY 'change_me';
+# GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+# FLUSH PRIVILEGES;
 
+
+# SELECT User, Host FROM mysql.user
