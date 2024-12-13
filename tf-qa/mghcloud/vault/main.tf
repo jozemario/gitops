@@ -6,6 +6,11 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.0.0"
     }
+
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.16.1"
+    }
   }
   
 }
@@ -29,9 +34,9 @@ resource "kubernetes_secret" "vault-storage-config" {
 }
 
 resource "helm_release" "vault" {
-  chart = "hashicorp/vault"
+  chart = "vault"
   name = "vault"
-  repository = "https://helm.releases.hashicorp.com"
+  repository = "https://helm.releases.hashicorp.com/hashicorp"
   version   = "0.29.1"
   namespace = "qa"
 
