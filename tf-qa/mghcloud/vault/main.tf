@@ -244,42 +244,42 @@ resource "kubernetes_service" "vault" {
     
 # }
 
-resource "kubernetes_ingress_v1" "vault" {
-  metadata {
-    name      = "vault"
-    namespace = "qa"
-    annotations = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-production"
-      "kubernetes.io/ingress.class"    = "traefik"
-    }
-    labels = {
-      app = "vault"
-    }
-  }
-  spec {
-    rule {
-      host = "vault.mghcloud.com"
-      http {
-        path {
-          path = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = "vault"
-              port {
-                number = 8200
-              }
-            }
-          }
-        }
-      }
-    }
-    tls {
-      hosts = ["vault.mghcloud.com"]
-      secret_name = "vault-mghcloud-com-tls"
-    }
-  }
-}
+# resource "kubernetes_ingress_v1" "vault" {
+#   metadata {
+#     name      = "vault"
+#     namespace = "qa"
+#     annotations = {
+#       "cert-manager.io/cluster-issuer" = "letsencrypt-production"
+#       "kubernetes.io/ingress.class"    = "traefik"
+#     }
+#     labels = {
+#       app = "vault"
+#     }
+#   }
+#   spec {
+#     rule {
+#       host = "vault.mghcloud.com"
+#       http {
+#         path {
+#           path = "/"
+#           path_type = "Prefix"
+#           backend {
+#             service {
+#               name = "vault"
+#               port {
+#                 number = 8200
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#     tls {
+#       hosts = ["vault.mghcloud.com"]
+#       secret_name = "vault-mghcloud-com-tls"
+#     }
+#   }
+# }
 
 
 resource "kubernetes_persistent_volume_claim" "vault" {
