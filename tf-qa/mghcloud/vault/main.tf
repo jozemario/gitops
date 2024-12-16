@@ -23,15 +23,15 @@ module "shared" {
 # 	template =   file("${path.module}/chart-values.yml")
 # }
 
-resource "kubernetes_secret" "vault-storage-config" {
-  metadata {
-    name      = "vault-storage-config"
-    namespace = "qa"
-  }
-  data = {
-    "config.hcl" = file("${path.module}/config.hcl")
-  }
-}
+# resource "kubernetes_secret" "vault-storage-config" {
+#   metadata {
+#     name      = "vault-storage-config"
+#     namespace = "qa"
+#   }
+#   data = {
+#     "config.hcl" = file("${path.module}/config.hcl")
+#   }
+# }
 
 resource "kubernetes_deployment" "vault" {
   metadata {
