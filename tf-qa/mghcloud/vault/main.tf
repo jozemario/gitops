@@ -125,7 +125,7 @@ resource "kubernetes_deployment" "vault" {
             sub_path = "vault-root-token"
           }
           volume_mount {
-            mount_path = "/vault/file/vault-init.sh"
+            mount_path = "/usr/local/bin/vault-init.sh"
             name = "vault-init"
             sub_path = "vault-init.sh"
           }
