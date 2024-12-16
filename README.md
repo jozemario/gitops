@@ -493,15 +493,20 @@ helm install vault hashicorp/vault --namespace qa \
  --set='server.volumes[0].secret.secretName=vault-storage-config' \
  --set='server.volumeMounts[0].mountPath=/vault/userconfig/vault-storage-config' \
  --set='server.volumeMounts[0].name=userconfig-vault-storage-config' \
- --set='server.volumeMounts[0].readOnly=true' \
- --set='server.extraArgs=-config=/vault/userconfig/vault-storage-config/config.hcl' \
- --set='server.service.dataStorage.storageClass=nfs' \
- --set='server.service.dataStorage.size=2Gi' \
+ --set='server.hostNetwork=true' \
  --set='server.service.type=NodePort' \
- --set='server.service.nodePort=30300' \
+ --set='server.service.nodePort=30301' \
  --set='ui.enabled=true' \
  --set='ui.service.type=NodePort' \
- --set='ui.service.nodePort=30301'
+ --set='ui.service.nodePort=30300' \
+ --set='server.extraArgs=-config=/vault/userconfig/vault-storage-config/config.hcl'
+% --set='server.standalone.config=`{ listener "tcp" { address = "0.0.0.0:8200" }}`'
+--set='server.extraEnvironmentVars.VAULT_ADDR=http://192.168.10.206:30301' \
+
+% --set='server.volumeMounts[0].readOnly=true' \
+% --set='server.service.dataStorage.name=vault-pvc' \
+% --set='server.service.dataStorage.storageClass=nfs' \
+% --set='server.service.dataStorage.size=2Gi' \
 
 ---
 
@@ -511,3 +516,10 @@ Init vault ui
 kubectl -n qa port-forward vault-0 8200:8200
 
 kubectl -n qa exec -ti vault-0 -- vault operator init
+
+kubectl -n qa exec vault-0 -- vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+
+vault operator init -address=http://127.0.0.1:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+kubectl -n qa exec vault-0 -- vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+
+helm -n qa uninstall vault

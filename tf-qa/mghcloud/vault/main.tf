@@ -7,10 +7,10 @@ terraform {
       version = ">= 2.0.0"
     }
 
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.16.1"
-    }
+    # helm = {
+    #   source  = "hashicorp/helm"
+    #   version = ">= 2.16.1"
+    # }
   }
   
 }
@@ -19,9 +19,9 @@ module "shared" {
   source = "../../shared"
 }
 
-data "template_file" "vault" {
-	template =   file("${path.module}/chart-values.yml")
-}
+# data "template_file" "vault" {
+# 	template =   file("${path.module}/chart-values.yml")
+# }
 
 resource "kubernetes_secret" "vault-storage-config" {
   metadata {
@@ -32,6 +32,151 @@ resource "kubernetes_secret" "vault-storage-config" {
     "config.hcl" = file("${path.module}/config.hcl")
   }
 }
+
+resource "kubernetes_deployment" "vault" {
+  metadata {
+    name      = "vault"
+    namespace = "qa"
+    labels = {
+      environment = "qa"
+      app         = "vault"
+      managed-by  = "terraform"
+    }
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "vault"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "vault"
+        }
+      }
+      spec {
+        container {
+          image = "hashicorp/vault:1.15.0"
+          name = "vault-container"
+          env {
+            name = "VAULT_ADDR"
+            value = "http://0.0.0.0:8200"
+          }
+          port {
+            container_port = 8200
+          }
+          volume_mount {
+            mount_path = "/vault/config/config.hcl"
+            name = "vault-config"
+            sub_path = "config.hcl"
+          }
+          volume_mount {
+            mount_path = "/vault/file/"
+            name = "vault-pvc"
+            sub_path = "vault"
+          }
+
+          security_context {
+            capabilities {
+              add = ["IPC_LOCK"]
+            }
+          }
+
+          command = ["server"]
+
+        }
+        container {
+          image = "hashicorp/vault:1.15.0"
+          name = "vault-init"
+          env {
+            name = "VAULT_ADDR"
+            value = "http://201.205.178.45:30300"
+          }
+          env {
+            name = "MY_VAULT_TOKEN"
+            value = "my-secure-token"
+          }
+          volume_mount {
+            mount_path = "/vault/file/"
+            name = "vault-pvc"
+            sub_path = "vault"
+          }
+          volume_mount {
+            mount_path = "/vault/file/vault-root-token"
+            name = "vault-root-token"
+            sub_path = "vault-root-token"
+          }
+          volume_mount {
+            mount_path = "/vault/file/vault-init.sh"
+            name = "vault-init"
+            sub_path = "vault-init.sh"
+          }
+          command = ["/usr/local/bin/vault-init.sh"]
+        }
+        
+        
+        volume {
+          name = "vault-config"
+          config_map {
+            name = "vault"
+            items {
+              key = "config.hcl"
+              path = "config.hcl"
+            }
+          }
+        }
+
+        volume {
+          name = "vault-pvc"
+          persistent_volume_claim {
+            claim_name = "vault-pvc"
+          }
+        } 
+
+        volume {
+          name = "vault-init"
+          config_map {
+            name = "vault-init"
+            items {
+              key = "vault-init.sh"
+              path = "vault-init.sh"
+            }
+          }
+        }
+
+        service_account_name = "vault"
+      } 
+    }
+  }
+}   
+
+resource "kubernetes_service" "vault" {
+  metadata {
+    name      = "vault"
+    namespace = "qa"
+    labels = {
+      environment = "qa"
+      app         = "vault"
+      managed-by  = "terraform"
+    }
+  }
+  spec {
+    selector = {
+      app = "vault"
+    }
+    type = "NodePort"
+    port {
+      name = "vault"
+      node_port = 30300
+      port = 8200
+      target_port = 8200
+    }
+  }
+}
+
+
 
 # resource "helm_release" "vault" {
 #   chart = "hashicorp/vault"
