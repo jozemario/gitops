@@ -116,7 +116,8 @@ resource "kubernetes_deployment" "vault" {
             }
           }
 
-          command = ["server"]
+          command = ["/bin/sh", "-c"]
+          args = ["vault server -config=/vault/config/config.hcl"]
 
         }
         # init_container {
