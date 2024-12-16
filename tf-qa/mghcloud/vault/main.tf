@@ -103,7 +103,7 @@ resource "kubernetes_deployment" "vault" {
           command = ["server"]
 
         }
-        container {
+        init_container {
           image = "hashicorp/vault:1.18.2"
           name = "vault-init"
           env {
