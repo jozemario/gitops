@@ -265,7 +265,7 @@ resource "kubernetes_ingress_v1" "vault" {
           path_type = "Prefix"
           backend {
             service {
-              name = helm_release.vault.name
+              name = "vault"
               port {
                 number = 8200
               }
