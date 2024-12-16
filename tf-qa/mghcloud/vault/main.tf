@@ -37,6 +37,11 @@ resource "kubernetes_config_map" "vault" {
   metadata {
     name      = "vault"
     namespace = "qa"
+    labels = {
+      environment = "qa"
+      app         = "vault"
+      managed-by  = "terraform"
+    }
   }
   data = {
     "config.hcl" = file("${path.module}/config.hcl")
