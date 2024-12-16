@@ -33,6 +33,17 @@ module "shared" {
 #   }
 # }
 
+resource "kubernetes_config_map" "vault" {
+  metadata {
+    name      = "vault"
+    namespace = "qa"
+  }
+  data = {
+    "config.hcl" = file("${path.module}/config.hcl")
+    "vault-init.sh" = file("${path.module}/vault-init.sh")
+  }
+}
+
 resource "kubernetes_deployment" "vault" {
   metadata {
     name      = "vault"
@@ -122,10 +133,6 @@ resource "kubernetes_deployment" "vault" {
           name = "vault-config"
           config_map {
             name = "vault"
-            items {
-              key = "config.hcl"
-              path = "config.hcl"
-            }
           }
         }
 
@@ -139,7 +146,7 @@ resource "kubernetes_deployment" "vault" {
         volume {
           name = "vault-init"
           config_map {
-            name = "vault-init"
+            name = "vault"
             items {
               key = "vault-init.sh"
               path = "vault-init.sh"
