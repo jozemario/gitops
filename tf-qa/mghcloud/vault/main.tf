@@ -95,6 +95,20 @@ resource "kubernetes_deployment" "vault" {
             sub_path = "vault"
             read_only = false
           }
+          volume_mount {
+            mount_path = "/usr/local/bin/vault-init.sh"
+            name = "vault-init"
+            sub_path = "vault-init.sh"
+            read_only = false
+          }
+
+          lifecycle {
+            post_start {
+              exec {
+                command = ["/bin/sh", "-c", "chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
+              }
+            }
+          }
 
           security_context {
             capabilities {
@@ -105,39 +119,39 @@ resource "kubernetes_deployment" "vault" {
           command = ["server"]
 
         }
-        init_container {
-          image = "hashicorp/vault:1.18.2"
-          name = "vault-init"
-          env {
-            name = "VAULT_ADDR"
-            value = "http://201.205.178.45:30300"
-          }
-          env {
-            name = "MY_VAULT_TOKEN"
-            value = "my-secure-token"
-          }
-          volume_mount {
-            mount_path = "/vault/file/"
-            name = "vault-pvc"
-            sub_path = "vault"
-            read_only = false
-          }
-          volume_mount {
-            mount_path = "/vault/file/vault-root-token"
-            name = "vault-pvc"
-            sub_path = "vault-root-token"
-            read_only = false
-          }
-          volume_mount {
-            mount_path = "/usr/local/bin/vault-init.sh"
-            name = "vault-init"
-            sub_path = "vault-init.sh"
-            read_only = false
-          }
-          command = ["/bin/sh", "-c"]
-          args = ["chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
+        # init_container {
+        #   image = "hashicorp/vault:1.18.2"
+        #   name = "vault-init"
+        #   env {
+        #     name = "VAULT_ADDR"
+        #     value = "http://201.205.178.45:30300"
+        #   }
+        #   env {
+        #     name = "MY_VAULT_TOKEN"
+        #     value = "my-secure-token"
+        #   }
+        #   volume_mount {
+        #     mount_path = "/vault/file/"
+        #     name = "vault-pvc"
+        #     sub_path = "vault"
+        #     read_only = false
+        #   }
+        #   volume_mount {
+        #     mount_path = "/vault/file/vault-root-token"
+        #     name = "vault-pvc"
+        #     sub_path = "vault-root-token"
+        #     read_only = false
+        #   }
+        #   volume_mount {
+        #     mount_path = "/usr/local/bin/vault-init.sh"
+        #     name = "vault-init"
+        #     sub_path = "vault-init.sh"
+        #     read_only = false
+        #   }
+        #   command = ["/bin/sh", "-c"]
+        #   args = ["chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
           
-        }
+        # }
         
         restart_policy = "Always"
         volume {
