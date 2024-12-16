@@ -146,7 +146,7 @@ resource "kubernetes_deployment" "vault" {
           }
         }
 
-        service_account_name = "vault"
+        # service_account_name = "vault"
       } 
     }
   }
