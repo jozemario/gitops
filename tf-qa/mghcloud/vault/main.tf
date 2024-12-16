@@ -105,7 +105,7 @@ resource "kubernetes_deployment" "vault" {
           }
           volume_mount {
             mount_path = "/vault/file/vault-root-token"
-            name = "vault-root-token"
+            name = "vault-pvc"
             sub_path = "vault-root-token"
           }
           volume_mount {
@@ -114,9 +114,10 @@ resource "kubernetes_deployment" "vault" {
             sub_path = "vault-init.sh"
           }
           command = ["/usr/local/bin/vault-init.sh"]
+          
         }
         
-        
+        restart_policy = "on-failure"
         volume {
           name = "vault-config"
           config_map {
