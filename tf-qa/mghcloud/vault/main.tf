@@ -117,7 +117,7 @@ resource "kubernetes_deployment" "vault" {
           
         }
         
-        restart_policy = "on-failure"
+        restart_policy = "Always"
         volume {
           name = "vault-config"
           config_map {
