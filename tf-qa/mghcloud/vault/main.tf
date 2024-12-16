@@ -74,7 +74,7 @@ resource "kubernetes_deployment" "vault" {
       }
       spec {
         container {
-          image = "hashicorp/vault:1.13.3"
+          image = "hashicorp/vault:1.15.0"
           name = "vault-container"
           env {
             name = "VAULT_ADDR"
@@ -104,7 +104,7 @@ resource "kubernetes_deployment" "vault" {
 
         }
         container {
-          image = "hashicorp/vault:1.13.3"
+          image = "hashicorp/vault:1.15.0"
           name = "vault-init"
           env {
             name = "VAULT_ADDR"
