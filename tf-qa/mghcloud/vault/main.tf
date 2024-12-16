@@ -134,7 +134,8 @@ resource "kubernetes_deployment" "vault" {
             sub_path = "vault-init.sh"
             read_only = false
           }
-          command = ["/usr/local/bin/vault-init.sh"]
+          command = ["/bin/sh", "-c"]
+          args = ["chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
           
         }
         
@@ -161,6 +162,8 @@ resource "kubernetes_deployment" "vault" {
               key = "vault-init.sh"
               path = "vault-init.sh"
             }
+            default_mode = "0755"  # This makes the script executable
+
           }
         }
 
