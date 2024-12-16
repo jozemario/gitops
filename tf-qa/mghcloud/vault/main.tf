@@ -87,11 +87,13 @@ resource "kubernetes_deployment" "vault" {
             mount_path = "/vault/config/config.hcl"
             name = "vault-config"
             sub_path = "config.hcl"
+            read_only = false
           }
           volume_mount {
             mount_path = "/vault/file/"
             name = "vault-pvc"
             sub_path = "vault"
+            read_only = false
           }
 
           security_context {
@@ -118,16 +120,19 @@ resource "kubernetes_deployment" "vault" {
             mount_path = "/vault/file/"
             name = "vault-pvc"
             sub_path = "vault"
+            read_only = false
           }
           volume_mount {
             mount_path = "/vault/file/vault-root-token"
             name = "vault-pvc"
             sub_path = "vault-root-token"
+            read_only = false
           }
           volume_mount {
             mount_path = "/usr/local/bin/vault-init.sh"
             name = "vault-init"
             sub_path = "vault-init.sh"
+            read_only = false
           }
           command = ["/usr/local/bin/vault-init.sh"]
           
