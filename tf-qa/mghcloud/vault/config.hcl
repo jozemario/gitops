@@ -12,6 +12,7 @@ storage "mysql" {
   username = "root"
   password = "change_me"
   database = "vaultdb"
+  plaintext_connection_allowed = "true"
 }
 scheme = "http"
 api_addr = "http://201.205.178.45:30300"

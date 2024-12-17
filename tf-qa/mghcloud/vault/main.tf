@@ -80,8 +80,19 @@ resource "kubernetes_deployment" "vault" {
             name = "VAULT_ADDR"
             value = "http://0.0.0.0:8200"
           }
+          env {
+            name = "VAULT_CLIENT_TIMEOUT"
+            value = "300"
+          }
           port {
             container_port = 8200
+            protocol = "TCP"
+            name = "vault"
+          }
+          port {
+            container_port = 8201
+            protocol = "TCP"
+            name = "vault-cluster"
           }
           volume_mount {
             mount_path = "/vault/config/config.hcl"
@@ -208,6 +219,12 @@ resource "kubernetes_service" "vault" {
       node_port = 30300
       port = 8200
       target_port = 8200
+    }
+    port {
+      name = "vault-cluster"
+      node_port = 30301
+      port = 8201
+      target_port = 8201
     }
   }
 }

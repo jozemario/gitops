@@ -522,4 +522,6 @@ kubectl -n qa exec vault-0 -- vault operator init -key-shares=1 -key-threshold=1
 vault operator init -address=http://127.0.0.1:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
 kubectl -n qa exec vault-0 -- vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
 
+kubectl -n qa exec vault-85c75ddff7-5tchm -- vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+
 helm -n qa uninstall vault
