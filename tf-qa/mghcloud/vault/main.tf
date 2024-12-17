@@ -102,13 +102,13 @@ resource "kubernetes_deployment" "vault" {
             read_only = false
           }
 
-          lifecycle {
-            post_start {
-              exec {
-                command = ["/bin/sh", "-c", "chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
-              }
-            }
-          }
+          # lifecycle {
+          #   post_start {
+          #     exec {
+          #       command = ["/bin/sh", "-c", "chmod +x /usr/local/bin/vault-init.sh && /usr/local/bin/vault-init.sh"]
+          #     }
+          #   }
+          # }
 
           security_context {
             capabilities {
