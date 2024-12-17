@@ -6,12 +6,8 @@ listener "tcp" {
   tls_require_and_verify_client_cert = false
 }
 
-storage "mysql" {
-  address = "201.205.178.45:30005"
-  username = "root"
-  password = "change_me"
-  database = "vaultdb"
-  plaintext_connection_allowed = true
+storage "file" {
+  path = "/vault/file"
 }
 
 api_addr = "http://201.205.178.45:30300"

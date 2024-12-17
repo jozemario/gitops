@@ -12,7 +12,13 @@ locals {
       postgres_database     = "postgres"
       postgres_user         = "mghcloud"
       postgres_password     = "change_me"
-      
+      keycloak_database     = "keycloak"
+      keycloak_user         = "admin"
+      keycloak_password     = "change_me"
+      keycloak_db_host     = "201.205.178.45"
+      keycloak_db_port     = "30204"
+      keycloak_db_user     = "postgres"
+      keycloak_db_password = "change_me"
 
   }
 }

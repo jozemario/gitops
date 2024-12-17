@@ -519,7 +519,10 @@ kubectl -n qa exec -ti vault-0 -- vault operator init
 
 kubectl -n qa exec vault-0 -- vault operator init -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
 
-vault operator init -address=http://127.0.0.1:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
+vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > /vault/file/keys
+
+vault operator init -address=http://127.0.0.1:8200 -key-shares=1 -key-threshold=1 -format=json > /vault/file/keys
+
 kubectl -n qa exec vault-0 -- vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
 
 kubectl -n qa exec vault-77845fc7c5-nv9jt -- vault operator init -address=http://localhost:8200 -key-shares=1 -key-threshold=1 -format=json > cluster-keys.json
@@ -530,3 +533,18 @@ export VAULT_ADDR=http://localhost:8200
 export VAULT_CLIENT_TIMEOUT=500
 export MY_VAULT_TOKEN=my-secure-token
 ./usr/local/bin/vault-init.sh
+
+/app # apk update
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/community/x86_64/APKINDEX.tar.gz
+v3.7.0-243-gf26e75a186 [http://dl-cdn.alpinelinux.org/alpine/v3.7/main]
+v3.7.0-229-g087f28e29d [http://dl-cdn.alpinelinux.org/alpine/v3.7/community]
+OK: 9051 distinct packages available
+
+/app # apk add busybox-extras
+(1/1) Installing busybox-extras (1.27.2-r11)
+Executing busybox-extras-1.27.2-r11.post-install
+Executing busybox-1.27.2-r7.trigger
+OK: 77 MiB in 64 packages
+
+/app # busybox-extras telnet localhost 6900
