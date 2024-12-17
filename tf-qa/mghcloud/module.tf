@@ -18,6 +18,6 @@ module "vault" {
   source = "./vault"
 }
 
-module "keycloak" {
-  source = "./keycloak"
-}
+# module "keycloak" {
+#   source = "./keycloak"
+# }
