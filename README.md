@@ -500,13 +500,6 @@ helm install vault hashicorp/vault --namespace qa \
  --set='ui.service.type=NodePort' \
  --set='ui.service.nodePort=30300' \
  --set='server.extraArgs=-config=/vault/userconfig/vault-storage-config/config.hcl'
-% --set='server.standalone.config=`{ listener "tcp" { address = "0.0.0.0:8200" }}`'
---set='server.extraEnvironmentVars.VAULT_ADDR=http://192.168.10.206:30301' \
-
-% --set='server.volumeMounts[0].readOnly=true' \
-% --set='server.service.dataStorage.name=vault-pvc' \
-% --set='server.service.dataStorage.storageClass=nfs' \
-% --set='server.service.dataStorage.size=2Gi' \
 
 ---
 
@@ -534,17 +527,9 @@ export VAULT_CLIENT_TIMEOUT=500
 export MY_VAULT_TOKEN=my-secure-token
 ./usr/local/bin/vault-init.sh
 
-/app # apk update
-fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/main/x86_64/APKINDEX.tar.gz
-fetch http://dl-cdn.alpinelinux.org/alpine/v3.7/community/x86_64/APKINDEX.tar.gz
-v3.7.0-243-gf26e75a186 [http://dl-cdn.alpinelinux.org/alpine/v3.7/main]
-v3.7.0-229-g087f28e29d [http://dl-cdn.alpinelinux.org/alpine/v3.7/community]
-OK: 9051 distinct packages available
+install telnet in vault pod alpine
+apk update
+apk add busybox-extras
+busybox-extras telnet localhost 6900
 
-/app # apk add busybox-extras
-(1/1) Installing busybox-extras (1.27.2-r11)
-Executing busybox-extras-1.27.2-r11.post-install
-Executing busybox-1.27.2-r7.trigger
-OK: 77 MiB in 64 packages
-
-/app # busybox-extras telnet localhost 6900
+---

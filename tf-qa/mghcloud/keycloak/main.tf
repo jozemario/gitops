@@ -50,11 +50,11 @@ resource "kubernetes_deployment" "keycloak" {
             value = "https://keycloak.mghcloud.com"
           }
           env {
-            name = "KEYCLOAK_ADMIN"
+            name = "KC_BOOTSTRAP_ADMIN_USERNAME"
             value = module.shared.config.keycloak_user
           }
           env {
-            name = "KEYCLOAK_ADMIN_PASSWORD"
+            name = "KC_BOOTSTRAP_ADMIN_PASSWORD"
             value = module.shared.config.keycloak_password
           }
           env {
@@ -90,7 +90,7 @@ resource "kubernetes_deployment" "keycloak" {
             name = "httpsoc"
             container_port = 9990
           }
-          args = ["-b","0.0.0.0","-Dkeycloak.migration.action=import","-Dkeycloak.migration.provider=dir","-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config","-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"]#,"-Djboss.socket.binding.port-offset=1000"]
+          # args = ["-b","0.0.0.0","-Dkeycloak.migration.action=import","-Dkeycloak.migration.provider=dir","-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config","-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"]#,"-Djboss.socket.binding.port-offset=1000"]
 
           volume_mount {
             mount_path = "/opt/jboss/keycloak/realm-config"
