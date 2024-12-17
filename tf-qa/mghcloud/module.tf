@@ -14,6 +14,10 @@ module "wordpress" {
   source = "./wordpress"
 }
 
-# module "vault" {
-#   source = "./vault"
-# }
+module "vault" {
+  source = "./vault"
+}
+
+module "keycloak" {
+  source = "./keycloak"
+}
