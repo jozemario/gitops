@@ -91,7 +91,7 @@ resource "kubernetes_deployment" "keycloak" {
             container_port = 9990
           }
           # args = ["-b","0.0.0.0","-Dkeycloak.migration.action=import","-Dkeycloak.migration.provider=dir","-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config","-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"]#,"-Djboss.socket.binding.port-offset=1000"]
-          args = ["start", "--optimized", "--import-realm", "/opt/jboss/keycloak/realm-config"]
+          args = ["start", "--optimized"]
           volume_mount {
             mount_path = "/opt/jboss/keycloak/realm-config"
             name = "keycloak-pvc"
