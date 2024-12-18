@@ -42,8 +42,8 @@ resource "kubernetes_deployment" "keycloak" {
           image = "quay.io/keycloak/keycloak:26.0.7"
           name = "keycloak-container"
           env {
-            name = "KC_PROXY"
-            value = "edge"
+            name = "KC_HTTP_ENABLED"
+            value = "true"
           }
           env {
             name = "KC_HOSTNAME"
@@ -57,41 +57,41 @@ resource "kubernetes_deployment" "keycloak" {
             name = "KC_BOOTSTRAP_ADMIN_PASSWORD"
             value = module.shared.config.keycloak_password
           }
-          env {
-            name = "KC_DB"
-            value = "postgres"
-          }
-          env {
-            name = "KC_DB_URL" # JDBC URL.
-            value = "jdbc:postgresql://${module.shared.config.keycloak_db_host}:${module.shared.config.keycloak_db_port}/${module.shared.config.keycloak_database}"
-          }
+          # env {
+          #   name = "KC_DB"
+          #   value = "postgres"
+          # }
+          # env {
+          #   name = "KC_DB_URL" # JDBC URL.
+          #   value = "jdbc:postgresql://${module.shared.config.keycloak_db_host}:${module.shared.config.keycloak_db_port}/${module.shared.config.keycloak_database}"
+          # }
 
-          env {
-            name = "KC_DB_USERNAME"
-            value = module.shared.config.keycloak_db_user
-          }
-          env {
-            name = "KC_DB_PASSWORD"
-            value = module.shared.config.keycloak_db_password
-          }
-          port {
-            name = "http"
-            container_port = 9080
-          }
-          port {
-            name = "http2"
-            container_port = 8080
-          }
-          port {
-            name = "https"
-            container_port = 8443
-          }
-          port {
-            name = "httpsoc"
-            container_port = 9990
-          }
+          # env {
+          #   name = "KC_DB_USERNAME"
+          #   value = module.shared.config.keycloak_db_user
+          # }
+          # env {
+          #   name = "KC_DB_PASSWORD"
+          #   value = module.shared.config.keycloak_db_password
+          # }
+          # port {
+          #   name = "http"
+          #   container_port = 8080
+          # }
+          # port {
+          #   name = "http2"
+          #   container_port = 8080
+          # }
+          # port {
+          #   name = "https"
+          #   container_port = 8443
+          # }
+          # port {
+          #   name = "httpsoc"
+          #   container_port = 9990
+          # }
           # args = ["-b","0.0.0.0","-Dkeycloak.migration.action=import","-Dkeycloak.migration.provider=dir","-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config","-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"]#,"-Djboss.socket.binding.port-offset=1000"]
-          args = ["start-dev", "--hostname", "https://keycloak.mghcloud.com", "--http-enabled", "true"]
+          args = ["start-dev"]
           volume_mount {
             mount_path = "/opt/jboss/keycloak/realm-config"
             name = "keycloak-pvc"
