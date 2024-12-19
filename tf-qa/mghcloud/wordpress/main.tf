@@ -92,6 +92,12 @@ resource "kubernetes_deployment" "wordpress" {
             name  = "WORDPRESS_DB_NAME"
             value = module.shared.config.wordpress_db_name
           }
+
+          env {
+            name  = "WORDPRESS_DEBUG"
+            value = "true"
+          }
+
           /* env {
             name  = "PUID"
             value = "\\x31\\x30\\x33\\x35" # < ACII code for '1035'
