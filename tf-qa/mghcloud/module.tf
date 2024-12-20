@@ -21,3 +21,7 @@ module "vault" {
 module "keycloak" {
   source = "./keycloak"
 }
+
+module "redis" {
+  source = "./redis"
+}
