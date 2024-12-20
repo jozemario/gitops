@@ -19,7 +19,7 @@ locals {
       keycloak_db_port     = "30204"
       keycloak_db_user     = "mghcloud"
       keycloak_db_password = "change_me"
-
+      redis_password      = "change_me"
   }
 }
 

@@ -55,7 +55,10 @@ resource "kubernetes_deployment" "redis" {
             name = "redis-conf"
             read_only = false
           }
+          command = ["redis-server"]
+          args = ["--requirepass", module.shared.config.redis_password]
         }
+        
         restart_policy = "Always"
         volume {
           name = "redis-pvc"
