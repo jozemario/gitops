@@ -20,6 +20,7 @@ locals {
       keycloak_db_user     = "mghcloud"
       keycloak_db_password = "change_me"
       redis_password      = "change_me"
+      redmine_secret_key_base = "supersecretkey"
   }
 }
 
