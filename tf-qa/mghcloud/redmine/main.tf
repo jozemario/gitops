@@ -43,7 +43,7 @@ resource "kubernetes_deployment" "redmine" {
           image = "redmine:4.2.2"
           env {
             name = "REDMINE_SECRET_KEY_BASE"
-            value = module.shared.redmine_secret_key_base
+            value = module.shared.config.redmine_secret_key_base
           }
           env {
             name = "REDMINE_DB_USERNAME"
