@@ -25,3 +25,7 @@ module "keycloak" {
 module "redis" {
   source = "./redis"
 }
+
+module "redmine" {
+  source = "./redmine"
+}
