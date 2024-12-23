@@ -105,6 +105,13 @@ resource "kubernetes_deployment" "redmine" {
             sub_path = "config"
           }
           volume_mount {
+            name = "redmine-conf"
+            mount_path = "/usr/src/redmine/config/configuration.yml"
+            sub_path = "configuration.yml"
+            read_only = false
+          }
+
+          volume_mount {
             name = "redmine-pvc"
             mount_path = "/usr/src/redmine/repos"
             sub_path = "repos"
@@ -115,10 +122,21 @@ resource "kubernetes_deployment" "redmine" {
             sub_path = "git"
           }
         }
+
         volume {
           name = "redmine-pvc"
           persistent_volume_claim {
             claim_name = "redmine-pvc"
+          }
+        }
+        volume {
+          name = "redmine-conf"
+          config_map {
+            name = "redmine"
+            items {
+              key = "configuration.yml"
+              path = "configuration.yml"
+            }
           }
         }
       }
