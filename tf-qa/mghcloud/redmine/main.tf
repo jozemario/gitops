@@ -192,12 +192,10 @@ resource "kubernetes_persistent_volume_claim" "redmine" {
 
 resource "kubernetes_config_map" "redmine" {
   metadata {
-    name = "redmine-conf"
+    name = "redmine"
     namespace = "qa"
     labels = {
       app = "redmine"
-      managed-by  = "terraform"
-      environment = "qa"
     }
   }
   data = {
