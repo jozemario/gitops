@@ -106,7 +106,7 @@ resource "kubernetes_deployment" "redmine" {
           }
           volume_mount {
             name = "redmine-conf"
-            mount_path = "/usr/src/redmine/config/configuration.yml"
+            mount_path = "/etc/redmine/configuration.yml"
             sub_path = "configuration.yml"
             read_only = false
           }
@@ -120,6 +120,14 @@ resource "kubernetes_deployment" "redmine" {
             name = "redmine-pvc"
             mount_path = "/git"
             sub_path = "git"
+          }
+
+          lifecycle {
+            post_start {
+              exec {
+                command = ["/bin/cp", "-v", "/etc/redmine/configuration.yml", "/usr/src/redmine/config/configuration.yml"]
+              }
+            }
           }
         }
 
