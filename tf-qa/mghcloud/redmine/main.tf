@@ -141,7 +141,7 @@ resource "kubernetes_deployment" "redmine" {
                 # copy database.yml  to /usr/src/redmine/config/database.yml and 
                 # copy configuration.yml to /usr/src/redmine/config/configuration.yml
                 # copy secrets.yml to /usr/src/redmine/config/secrets.yml
-                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml && cp -v /etc/redmine/secrets.yml /usr/src/redmine/config/secrets.yml"]
+                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml && cp -v /etc/redmine/secrets.yml /usr/src/redmine/config/secrets.yml && bundle exec rake generate_secret_token"]
               }
             }
           }
