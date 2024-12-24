@@ -1,0 +1,7 @@
+production:
+  adapter: mysql2
+  host: "201.205.178.45"
+  port: "30005"
+  username: "root"
+  password: "change_me"
+  database: "redmine"
