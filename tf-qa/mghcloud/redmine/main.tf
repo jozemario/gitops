@@ -62,7 +62,7 @@ resource "kubernetes_deployment" "redmine" {
             value = "30005"
           }
           env {
-            name = "REDMINE_DB_HOST"
+            name = "REDMINE_DB_MYSQL"
             value = "201.205.178.45"
           }
           port {
@@ -99,11 +99,11 @@ resource "kubernetes_deployment" "redmine" {
             mount_path = "/usr/src/redmine/public/assets"
             sub_path = "assets"
           }
-        #   volume_mount {
-        #     name = "redmine-pvc"
-        #     mount_path = "/usr/src/redmine/config"
-        #     sub_path = "config"
-        #   }
+          volume_mount {
+            name = "redmine-pvc"
+            mount_path = "/usr/src/redmine/config"
+            sub_path = "config"
+          }
         #   volume_mount {
         #     name = "redmine-conf"
         #     mount_path = "/etc/redmine/configuration.yml"
