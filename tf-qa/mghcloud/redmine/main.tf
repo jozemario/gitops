@@ -99,17 +99,17 @@ resource "kubernetes_deployment" "redmine" {
             mount_path = "/usr/src/redmine/public/assets"
             sub_path = "assets"
           }
-          volume_mount {
-            name = "redmine-pvc"
-            mount_path = "/usr/src/redmine/config"
-            sub_path = "config"
-          }
-          volume_mount {
-            name = "redmine-conf"
-            mount_path = "/etc/redmine/configuration.yml"
-            sub_path = "configuration.yml"
-            read_only = false
-          }
+        #   volume_mount {
+        #     name = "redmine-pvc"
+        #     mount_path = "/usr/src/redmine/config"
+        #     sub_path = "config"
+        #   }
+        #   volume_mount {
+        #     name = "redmine-conf"
+        #     mount_path = "/etc/redmine/configuration.yml"
+        #     sub_path = "configuration.yml"
+        #     read_only = false
+        #   }
 
           volume_mount {
             name = "redmine-pvc"
@@ -122,13 +122,13 @@ resource "kubernetes_deployment" "redmine" {
             sub_path = "git"
           }
 
-          lifecycle {
-            post_start {
-              exec {
-                command = ["/bin/cp", "-v", "/etc/redmine/configuration.yml", "/usr/src/redmine/config/configuration.yml"]
-              }
-            }
-          }
+        #   lifecycle {
+        #     post_start {
+        #       exec {
+        #         command = ["/bin/cp", "-v", "/etc/redmine/configuration.yml", "/usr/src/redmine/config/configuration.yml"]
+        #       }
+        #     }
+        #   }
         }
 
         volume {
