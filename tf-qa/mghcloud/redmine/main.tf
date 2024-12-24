@@ -118,7 +118,12 @@ resource "kubernetes_deployment" "redmine" {
             read_only = false
           }
 
-
+          volume_mount {
+            name = "redmine-conf"
+            mount_path = "/etc/redmine/secret.yml"
+            sub_path = "secret.yml"
+            read_only = false
+          }
           volume_mount {
             name = "redmine-pvc"
             mount_path = "/usr/src/redmine/repos"
@@ -135,7 +140,8 @@ resource "kubernetes_deployment" "redmine" {
               exec {
                 # copy database.yml  to /usr/src/redmine/config/database.yml and 
                 # copy configuration.yml to /usr/src/redmine/config/configuration.yml
-                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml"]
+                # copy secret.yml to /usr/src/redmine/config/secret.yml
+                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml && cp -v /etc/redmine/secret.yml /usr/src/redmine/config/secret.yml"]
               }
             }
           }
@@ -158,6 +164,10 @@ resource "kubernetes_deployment" "redmine" {
             items {
               key = "database.yml"
               path = "database.yml"
+            }
+            items {
+              key = "secret.yml"
+              path = "secret.yml"
             }
             default_mode = "0755"
           }
