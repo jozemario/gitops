@@ -99,12 +99,12 @@ resource "kubernetes_deployment" "redmine" {
             mount_path = "/usr/src/redmine/public/assets"
             sub_path = "assets"
           }
-          volume_mount {
-            name = "redmine-pvc"
-            mount_path = "/usr/src/redmine/config"
-            sub_path = "config"
-            read_only = false
-          }
+        #   volume_mount {
+        #     name = "redmine-pvc"
+        #     mount_path = "/usr/src/redmine/config"
+        #     sub_path = "config"
+        #     read_only = false
+        #   }
         #   volume_mount {
         #     name = "redmine-conf"
         #     mount_path = "/etc/redmine/configuration.yml"
