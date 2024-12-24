@@ -40,7 +40,7 @@ resource "kubernetes_deployment" "redmine" {
       spec {
         container {
           name = "redmine-container"
-          image = "redmine:4.2.2"
+          image = "redmine:6.0.2"
           env {
             name = "REDMINE_SECRET_KEY_BASE"
             value = module.shared.config.redmine_secret_key_base
@@ -99,11 +99,12 @@ resource "kubernetes_deployment" "redmine" {
             mount_path = "/usr/src/redmine/public/assets"
             sub_path = "assets"
           }
-        #   volume_mount {
-        #     name = "redmine-pvc"
-        #     mount_path = "/usr/src/redmine/config"
-        #     sub_path = "config"
-        #   }
+          volume_mount {
+            name = "redmine-pvc"
+            mount_path = "/usr/src/redmine/config"
+            sub_path = "config"
+            read_only = false
+          }
         #   volume_mount {
         #     name = "redmine-conf"
         #     mount_path = "/etc/redmine/configuration.yml"
