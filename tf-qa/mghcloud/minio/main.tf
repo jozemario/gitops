@@ -20,6 +20,8 @@ resource "kubernetes_deployment" "minio" {
     namespace = "qa"
     labels = {
       app = "minio"
+      managed-by = "terraform"
+      environment = "qa"
     }
   }
   spec {
@@ -58,7 +60,7 @@ resource "kubernetes_deployment" "minio" {
 
           volume_mount {
             name = "minio-data"
-            mount_path = "/data"
+            mount_path = "/export"
             sub_path = "data"
           }
           volume_mount {
@@ -68,16 +70,15 @@ resource "kubernetes_deployment" "minio" {
           }
 
           port {
+            name = "minio-port"
             container_port = 9000
           }
           port {
+            name = "minio-console-port"
             container_port = 9001
           }
 
-          command = ["/bin/sh", "-c", "minio server /data --console-address \":9001\""]
-
-
-
+          command = ["server /export --console-address \":9001\""]
 
         }
         volume {
