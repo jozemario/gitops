@@ -107,11 +107,17 @@ resource "kubernetes_deployment" "redmine" {
         #   }
           volume_mount {
             name = "redmine-conf"
+            mount_path = "/etc/redmine/database.yml"
+            sub_path = "database.yml"
+            read_only = false
+          }
+          volume_mount {
+            name = "redmine-conf"
             mount_path = "/etc/redmine/configuration.yml"
             sub_path = "configuration.yml"
             read_only = false
           }
-          
+
 
           volume_mount {
             name = "redmine-pvc"
@@ -127,9 +133,9 @@ resource "kubernetes_deployment" "redmine" {
           lifecycle {
             post_start {
               exec {
-                # fix database.yml remove quotes from  edited "mysql2" to mysql2 and 
+                # copy database.yml  to /usr/src/redmine/config/database.yml and 
                 # copy configuration.yml to /usr/src/redmine/config/configuration.yml
-                command = ["/bin/sh", "-c", "sed -i 's/\"mysql2\"/mysql2/g' /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml"]
+                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml"]
               }
             }
           }
@@ -148,6 +154,10 @@ resource "kubernetes_deployment" "redmine" {
             items {
               key = "configuration.yml"
               path = "configuration.yml"
+            }
+            items {
+              key = "database.yml"
+              path = "database.yml"
             }
             default_mode = "0755"
           }
@@ -213,6 +223,7 @@ resource "kubernetes_config_map" "redmine" {
   }
   data = {
     "configuration.yml" = "${file("${path.module}/configuration.yml")}"
+    "database.yml" = "${file("${path.module}/database.yml")}"
   }
 }
 
