@@ -38,8 +38,7 @@ resource "kubernetes_deployment" "minio" {
       spec {
         container {
           image = "minio/minio:latest"
-          name = "minio-container   "
-          args = ["server", "/data"]
+          name = "minio-container"
           env {
             name = "MINIO_ROOT_USER"
             value = "minio"
