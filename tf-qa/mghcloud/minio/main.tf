@@ -70,11 +70,11 @@ resource "kubernetes_deployment" "minio" {
           }
 
           port {
-            name = "minio-port"
+            name = "minio"
             container_port = 9000
           }
           port {
-            name = "minio-console-port"
+            name = "minio-console"
             container_port = 9001
           }
 
@@ -133,14 +133,12 @@ resource "kubernetes_service" "minio" {
       target_port = 9000
       node_port = 30101
       protocol = "TCP"
-      name = "minio-port"
     }
     port {
       port = 9001
       target_port = 9001
       node_port = 30102
       protocol = "TCP"
-      name = "minio-console-port"
     }
     type = "NodePort"
   }
