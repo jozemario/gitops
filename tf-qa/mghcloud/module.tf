@@ -29,3 +29,7 @@ module "redis" {
 module "redmine" {
   source = "./redmine"
 }
+
+module "minio" {
+  source = "./minio"
+}
