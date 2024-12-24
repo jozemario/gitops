@@ -137,6 +137,7 @@ resource "kubernetes_deployment" "redmine" {
               key = "configuration.yml"
               path = "configuration.yml"
             }
+            default_mode = "0755"
           }
         }
       }
