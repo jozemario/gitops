@@ -120,8 +120,8 @@ resource "kubernetes_deployment" "redmine" {
 
           volume_mount {
             name = "redmine-conf"
-            mount_path = "/etc/redmine/secret.yml"
-            sub_path = "secret.yml"
+            mount_path = "/etc/redmine/secrets.yml"
+            sub_path = "secrets.yml"
             read_only = false
           }
           volume_mount {
@@ -140,8 +140,8 @@ resource "kubernetes_deployment" "redmine" {
               exec {
                 # copy database.yml  to /usr/src/redmine/config/database.yml and 
                 # copy configuration.yml to /usr/src/redmine/config/configuration.yml
-                # copy secret.yml to /usr/src/redmine/config/secret.yml
-                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml && cp -v /etc/redmine/secret.yml /usr/src/redmine/config/secret.yml"]
+                # copy secrets.yml to /usr/src/redmine/config/secrets.yml
+                command = ["/bin/sh", "-c", "cp -v /etc/redmine/database.yml /usr/src/redmine/config/database.yml && cp -v /etc/redmine/configuration.yml /usr/src/redmine/config/configuration.yml && cp -v /etc/redmine/secrets.yml /usr/src/redmine/config/secrets.yml"]
               }
             }
           }
@@ -166,8 +166,8 @@ resource "kubernetes_deployment" "redmine" {
               path = "database.yml"
             }
             items {
-              key = "secret.yml"
-              path = "secret.yml"
+              key = "secrets.yml"
+              path = "secrets.yml"
             }
             default_mode = "0755"
           }
@@ -234,8 +234,10 @@ resource "kubernetes_config_map" "redmine" {
   data = {
     "configuration.yml" = "${file("${path.module}/configuration.yml")}"
     "database.yml" = "${file("${path.module}/database.yml")}"
+    "secrets.yml" = "${file("${path.module}/secrets.yml")}"
   }
 }
+
 
 resource "kubernetes_ingress_v1" "redmine" {
   metadata {
