@@ -61,7 +61,7 @@ resource "kubernetes_deployment" "minio" {
           volume_mount {
             name = "minio-data"
             mount_path = "/export"
-            sub_path = "data"
+            sub_path = "export"
           }
           volume_mount {
             name = "minio-config"
@@ -152,14 +152,16 @@ resource "kubernetes_persistent_volume_claim" "minio" {
     namespace = "qa"
     labels = {
       app = "minio"
+      managed-by  = "terraform"
+      environment = "qa"
     }
   }
   spec {
     storage_class_name = "nfs"
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources {
       requests = {
-        storage = "10Gi"
+        storage = "5Gi"
       }
     }
   }
@@ -171,6 +173,8 @@ resource "kubernetes_config_map" "minio" {
     namespace = "qa"
     labels = {
       app = "minio"
+      managed-by  = "terraform"
+      environment = "qa"
     }
   }
   data = {
