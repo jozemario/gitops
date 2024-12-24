@@ -26,6 +26,6 @@ module "redis" {
   source = "./redis"
 }
 
-module "redmine" {
-  source = "./redmine"
-}
+# module "redmine" {
+#   source = "./redmine"
+# }
