@@ -77,8 +77,8 @@ resource "kubernetes_deployment" "minio" {
             name = "minio-console"
             container_port = 9001
           }
-
-          command = ["server /export --console-address \":9001\""]
+          command = ["/bin/sh", "-c"]
+          args = ["minio server /export --console-address \":9001\""]
 
         }
         volume {
