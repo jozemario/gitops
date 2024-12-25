@@ -30,7 +30,7 @@ module "redmine" {
   source = "./redmine"
 }
 
-module "minio" {
-  source = "./minio"
-}
+# module "minio" {
+#   source = "./minio"
+# }
 
