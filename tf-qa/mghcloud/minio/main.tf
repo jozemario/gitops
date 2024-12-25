@@ -39,29 +39,29 @@ resource "kubernetes_deployment" "minio" {
       }
       spec {
         container {
-          image = "minio/minio:latest"
+          image = "quay.io/minio/minio:latest"
           name = "minio-container"
-          env {
-            name = "MINIO_ROOT_USER"
-            value = "minio"
-          }
-          env {
-            name = "MINIO_ROOT_PASSWORD"
-            value = "minio"
-          }
+        #   env {
+        #     name = "MINIO_ROOT_USER"
+        #     value = "minio"
+        #   }
+        #   env {
+        #     name = "MINIO_ROOT_PASSWORD"
+        #     value = "minio"
+        #   }
           env {
             name = "MINIO_ACCESS_KEY"
             value = "minio"
           }
           env {
             name = "MINIO_SECRET_KEY"
-            value = "minio"
+            value = "minio123"
           }
 
           volume_mount {
             name = "minio-data"
-            mount_path = "/export"
-            sub_path = "export"
+            mount_path = "/data"
+            sub_path = "data"
           }
           volume_mount {
             name = "minio-config"
@@ -77,8 +77,8 @@ resource "kubernetes_deployment" "minio" {
             name = "minio-console"
             container_port = 9001
           }
-          command = ["/bin/sh", "-c"]
-          args = ["minio server /export --console-address \":9001\""]
+          command = ["/bin/bash", "-c"]
+          args = ["minio server /data --console-address \":9001\""]
 
         }
         volume {
